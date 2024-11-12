@@ -1425,8 +1425,7 @@ Page-Based App：基于页面的应用模版，可以构建类似于电子书效
 Single View App：单视图应用模版，可以构建简单的单个视图的应用
 
 
-
-![image-20241102152502022](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102152502022.png)
+![image-20241102152502022](https://github.com/user-attachments/assets/cdf8b2b3-cbe9-4fe3-a2f4-eef91bdd600b)
 
 在开发项目的过程中，需要使用测试证书在真机上测试程序，在将程序发布到苹果商店时，需要发布证书进行产品的发布，这两种证书都是和账号绑定的
 
