@@ -1497,55 +1497,53 @@ Single View App：单视图应用模版，可以构建简单的单个视图的�
 
 应用的代理实现文件，应用代理文件是系统运行本应用的委托，里面定义了如程序的进入与退出、设备方向旋转等众多全局方法
 
-![image-20241102191914010](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102191914010.png)
-
+![image-20241102191914010](https://github.com/user-attachments/assets/1c052e3c-6043-4576-a0ce-05a68bbdd91d)
 
 
 1、可以把程序载入后需要执行的代码，写在程序完成加载的方法里面，当程序完成加载的过程后，在控制台输出一行提示文字
 
-![](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102193119128.png)
+![image-20241102193119128](https://github.com/user-attachments/assets/a9f37913-969f-4af2-8451-1943e5547e7a)
 
 
 
 2、当程序进入非活动状态时，调用此方法，在此期间，程序不会接收消息或事件
 
-![image-20241102193627270](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102193627270.png)
-
+![image-20241102193627270](https://github.com/user-attachments/assets/24d68bf3-2b32-4811-8645-c776b4b70fb3)
 
 
 3、当程序被推送到后台的时候，调用次方法，如果要设置后台继续某些动作，则在这个方法里面添加代码即可
 
-![image-20241102193912209](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102193912209.png)
-
+![image-20241102193912209](https://github.com/user-attachments/assets/daab0f67-1af7-446e-9cf2-b7e16db09d38)
 
 
 4、当程序从后台将要重新回到前台的时候，调用此方法
 
-![image-20241102194127792](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102194127792.png)
+![image-20241102194127792](https://github.com/user-attachments/assets/845c9657-2cf0-4dff-beb4-7916e8c4aa8f)
 
 
 
 5、当程序进入活动状态的时候，执行该方法
 
-![image-20241102194257846](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102194257846.png)
+![image-20241102194257846](https://github.com/user-attachments/assets/2a5a0e1a-901d-417b-8ed3-ad1ca31c144f)
 
 
 
 6、当程序将要退出的时候，调用该方法，通常是用来保存数据，和一些退出前的清理工作
 
-![image-20241102194416123](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102194416123.png)
+![image-20241102194416123](https://github.com/user-attachments/assets/9168b794-6b56-4139-8cad-c14d40f7c465)
 
 
 
 Xcode
 
-![image-20241107222259253](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107222259253.png)
+![image-20241107222259253](https://github.com/user-attachments/assets/a59bcd0f-b734-4227-865c-339570c54148)
 
 应用代理文件，是系统运行本应用的委托，里面定义了如程序的进入与退出，设备方向的旋转等众多全局方法
 
 ## ViewController
 
-![image-20241107222451801](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107222451801.png)
+![image-20241107222451801](https://github.com/user-attachments/assets/4d959b18-ba56-4aad-8f16-1a80c57422e6)
+
 
 视图控制器可以创建和管理视图也可以监测设备方向的变化，并调整视图大小以适应屏幕，以及在视图和模型之间进行数据的传递
 
