@@ -1598,7 +1598,8 @@ Xcode
 
 ## 版本控制导航器
 
-![image-20241107224050449](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107224050449.png)
+![image-20241107224050449](https://github.com/user-attachments/assets/d48312b0-352b-4b5c-8062-9150e7e42170)
+
 
 版本控制导航器图标，进入源码版本控制面板，在此面板可以对源码进行版本的管理
 
@@ -1606,7 +1607,8 @@ Xcode
 
 ## 状态面板
 
-![image-20241107224527621](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107224527621.png)
+![image-20241107224527621](https://github.com/user-attachments/assets/ee6275fe-205d-448e-a5ba-3a3d1e8a276e)
+
 
 状态面板显示项目中所有文档中的代码问题，黄色标志代表各种不影响程序运行的小问题，红色标志表示致命的错误，需要修复才能运行
 
@@ -1614,7 +1616,8 @@ Xcode
 
 ## 测试面板
 
-![image-20241107224827915](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107224827915.png)
+![image-20241107224827915](https://github.com/user-attachments/assets/6961f632-07d1-4a18-b96f-5f7dbb9d226c)
+
 
 测试面板显示了测试的所有用例
 
@@ -1657,7 +1660,8 @@ Xcode
 
 ### 效果
 
-![image-20241109103757876](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109103757876.png)
+![image-20241109103757876](https://github.com/user-attachments/assets/52e51254-e90d-4e5d-97c0-ba705f8100ce)
+
 
 ## 2、多个视图
 
@@ -1695,7 +1699,7 @@ Xcode
 
 ### 效果
 
-![image-20241109105746183](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109105746183.png)
+![image-20241109105746183](https://github.com/user-attachments/assets/3294a8f6-ce50-4442-b3ba-b3f967fb3716)
 
 
 
@@ -1772,7 +1776,8 @@ Xcode
 
 ### 效果
 
-![image-20241109112737936](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109112737936.png)
+![image-20241109112737936](https://github.com/user-attachments/assets/99a4e7c9-5211-43e1-8874-f5f39b30da12)
+
 
 
 
@@ -1809,7 +1814,8 @@ Xcode
 
 ### 效果
 
-![image-20241109114657162](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109114657162.png)
+![image-20241109114657162](https://github.com/user-attachments/assets/bd74bc93-ba8d-4144-98f7-7bb83d87ad4f)
+
 
 ## 5、图像圆角
 
@@ -1844,7 +1850,8 @@ Xcode
 
 ### 效果
 
-![image-20241109120153543](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109120153543.png)
+![image-20241109120153543](https://github.com/user-attachments/assets/76de6809-d86d-4b3c-a24d-19068e2c3a40)
+
 
 ## 6、给图像增加投影
 
@@ -1884,7 +1891,8 @@ Xcode
 
 ### 效果
 
-![image-20241109121114320](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109121114320.png)
+![image-20241109121114320](https://github.com/user-attachments/assets/0d7a4e82-9aba-41d3-9cc8-8414cd6ff87c)
+
 
 ## 7、渐变颜色
 
@@ -1928,7 +1936,8 @@ Xcode
 
 ### 效果
 
-![image-20241109122157707](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109122157707.png)
+![image-20241109122157707](https://github.com/user-attachments/assets/8d5e8bf1-10f3-4824-aeb1-ced8ed7d7ee6)
+
 
 ## 8、图片文理（平铺整个界面）
 
@@ -1990,7 +1999,8 @@ Xcode
 
 ### 效果
 
-![image-20241109232207116](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109232207116.png)
+![image-20241109224251529](https://github.com/user-attachments/assets/20095f13-dc2c-44e6-ad24-0c45e3572da3)
+
 
 ## 10、单机手势操作
 
