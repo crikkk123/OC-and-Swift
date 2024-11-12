@@ -1,4 +1,4 @@
-![image-20241102151203407](https://github.com/user-attachments/assets/3ebc991b-6cac-4c3a-93d5-6ece4267b388)![image-20241102151203407](https://github.com/user-attachments/assets/5d890d00-b2b0-44c8-9188-3b65da55c60d)# OC学习笔记
+# OC学习笔记
 
 # 一、基本数据类型
 
@@ -1395,7 +1395,7 @@ int main(int argc,const char* argv[]){
 
 # 三、xcode
 
-![Uploading image.png…]()
+![image-20241102151203407](https://github.com/user-attachments/assets/3ebc991b-6cac-4c3a-93d5-6ece4267b388)![image-20241102151203407](https://github.com/user-attachments/assets/5d890d00-b2b0-44c8-9188-3b65da55c60d
 
 
 
