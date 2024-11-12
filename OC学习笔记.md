@@ -1549,43 +1549,46 @@ Xcode
 
 ## Main
 
-![image-20241107222722764](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107222722764.png)
+![image-20241107222722764](https://github.com/user-attachments/assets/6b8e4a00-0a06-4845-bb78-a70ffebac293)
 
 这个主要是可以使所有的视图控制器以及它们之间的关系一目了然，它也是适配多个分辨率设备的利器（故事板）
 
 ## Assets
 
-![image-20241107222908852](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107222908852.png)
+![image-20241107222908852](https://github.com/user-attachments/assets/0c3f7623-0965-4851-8cc5-c0f4434441ca)
 
 资源文件夹可以方便进行图片管理，并且在读取图片时，不需要加上图片名的后缀，可以提高软件的安全性，它会将图片都加密压缩，并保存在Assets.car文件中
 
 ## LaunchScreen
 
-![image-20241107223218441](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107223218441.png)
+![image-20241107223218441](https://github.com/user-attachments/assets/86664340-87b5-401a-b4a4-2b85e552c4d9)
 
 启动场景故事板，可以帮助设计和适配程序的启动页
 
 ## info
 
-![image-20241107223327209](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107223327209.png)
+![image-20241107223327209](https://github.com/user-attachments/assets/3f08f1b1-275b-4211-a1b2-0a0c730a9b8c)
 
 每个程序都会使用信息属性列表文件，存储项目配置信息，例如程序的版本号，显示用的图标，支持的设备方向等等
 
 ## main
 
-![image-20241107223455069](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107223455069.png)
+![image-20241107223455069](https://github.com/user-attachments/assets/c06a9674-0add-447d-af1c-c037e9770469)
+
 
 工程根目录下的main文件，是应用程序的入口，它会创建主要的运行循环，处理应用程序里的各种事件，创建一个窗口，加载第一个控制器，并保持程序一直运行
 
 ## APPTest
 
-![image-20241107223750341](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107223750341.png)
+![image-20241107223750341](https://github.com/user-attachments/assets/90d2cd4c-4ba8-4291-8d2f-856b1660b5a8)
+
 
 项目测试目录下的内容
 
 ## UITest
 
-![image-20241107223839015](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241107223839015.png)
+![image-20241107223839015](https://github.com/user-attachments/assets/20ddc239-0938-44ae-b160-c93dbd9b1c86)
+
 
 产品目录，存放项目编译后生成的文件包，使用产品>编译命令，可以在此处生成合适发布到苹果市场的应用压缩包
 
