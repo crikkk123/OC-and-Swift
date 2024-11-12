@@ -1964,7 +1964,8 @@ Xcode
 
 ### 效果
 
-![image-20241109224251529](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109224251529.png)
+![image-20241109224251529](https://github.com/user-attachments/assets/22af51ba-d1d8-4cd3-b74b-a05d529a3e03)
+
 
 ## 9、仿射变换
 
@@ -1999,7 +2000,8 @@ Xcode
 
 ### 效果
 
-![image-20241109224251529](https://github.com/user-attachments/assets/20095f13-dc2c-44e6-ad24-0c45e3572da3)
+![image-20241109232207116](https://github.com/user-attachments/assets/f42a8000-b580-464a-b780-97402f6c1053)
+
 
 
 ## 10、单机手势操作
@@ -2053,7 +2055,8 @@ Xcode
 
 ### 效果
 
-![image-20241109234811532](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241109234811532.png)
+![image-20241109234811532](https://github.com/user-attachments/assets/85d43c88-e5dd-47f4-8586-8b7402fab688)
+
 
 ## 11、长按手势操作
 
@@ -2099,7 +2102,8 @@ Xcode
 
 ### 效果
 
-![image-20241110115605739](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241110115605739.png)
+![image-20241110115605739](https://github.com/user-attachments/assets/e54333b6-33eb-4f5c-a23c-48e86f5b9d94)
+
 
 ## 12、双击手势操作
 
@@ -2153,11 +2157,13 @@ Xcode
 
 ### 效果
 
-![image-20241110121154632](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241110121154632.png)
+![image-20241110121154632](https://github.com/user-attachments/assets/231b8f6e-3b3c-4ab3-9eb0-8a1857339857)
+
 
 ## 13、滚动视图
 
-![image-20241111223905325](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241111223905325.png)
+![Uploading image-20241111223905325.png…]()
+
 
 ~~~objective-c
 #import "FirstSubViewController.h"
