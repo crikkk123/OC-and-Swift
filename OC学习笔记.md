@@ -1309,7 +1309,8 @@ int main(int argc,const char* argv[]){
 
 默认状态下，Xcode使用ARC自动引用计数的方式，进行内存的管理，所以在删除自动释放池之后，还需要修改代码文件的编译属性
 
-![image-20241102144555091](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20241102144555091.png)
+![image-20241102144555091](https://github.com/user-attachments/assets/9a93a2eb-1af3-400c-9330-4590d155de4d)
+
 
 ~~~objective-c
 #import <Foundation/Foundation.h>
