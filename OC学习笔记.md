@@ -656,7 +656,10 @@ int main(int argc,const char* argv[]){
 
 ### 基本用法与C相同
 
-
+## 11、property
+~~~objective-c
+    
+~~~
 
 # 二、结构体、类、闭包
 
