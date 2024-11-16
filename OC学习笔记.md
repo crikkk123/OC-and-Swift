@@ -2411,4 +2411,51 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/8e762872-af01-4a7f-b8a8-4694aeb1c489)
 ![image](https://github.com/user-attachments/assets/bcf6ecba-b589-40a8-b7d1-ce8d57b5e4d3)
 
+## UIButton（UIImage）
+
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    UIButton* bt1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bt1.frame = CGRectMake(31, 100, 257, 60);
+    
+    UIImage* image = [UIImage imageNamed:@"1"];
+    // 绑定图片设置为正常状态下
+    [bt1 setImage:image forState:UIControlStateNormal];
+    [bt1 setTitleColor:@"Tap me" forState:UIControlStateNormal];
+    [bt1 setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    bt1.titleLabel.font = [UIFont fontWithName:@"Arail" size:24];
+    [bt1 addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:bt1];
+}
+
+- (void) buttonTap:(UIButton*) bt{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Infomation" message:@"UIButton Event. " preferredStyle:UIAlertControllerStyleAlert];
+        // 创建一个按钮，作为提示窗口中的“确定”按钮，当用户点击此按钮时，将关闭提示窗口
+        UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:OKAction];
+        [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/810216fb-1512-4c02-95d6-765de2139d0c)
+![image](https://github.com/user-attachments/assets/2230bb0b-4014-41f4-b794-fc8caf1cd834)
 
