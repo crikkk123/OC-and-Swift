@@ -2339,3 +2339,72 @@ NS_ASSUME_NONNULL_END
 
 
 # 三、UIKit
+## UIButton
+## 
+
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    // 背景为深色的提示信息按钮
+    UIButton* bt1 = [UIButton buttonWithType:UIButtonTypeInfoDark];
+    bt1.frame = CGRectMake(130, 80, 40, 40);
+    
+    // 圆角按钮
+    UIButton* bt2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bt2.frame = CGRectMake(80, 180, 150, 44);
+    bt2.backgroundColor = [UIColor purpleColor];
+    // 按钮的前景颜色为黄色
+    bt2.tintColor = [UIColor yellowColor];
+    [bt2 setTitle:@"Tap Me" forState:UIControlStateNormal];
+    [bt2 addTarget:self action:@selector(buttonTap:) forControlEvents:UIControlEventTouchUpInside];
+    
+    UIButton* bt3 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bt3.backgroundColor = [UIColor brownColor];
+    bt3.tintColor = [UIColor whiteColor];
+    [bt3 setTitle:@"Tap me!" forState:UIControlStateNormal];
+    bt3.frame = CGRectMake(80, 280, 150, 44);
+    // 给按钮添加边框效果
+    bt3.layer.masksToBounds = YES;
+    // 设置按钮层的圆角半径为10
+    bt3.layer.cornerRadius = 10;
+    // 设置按钮层的边框的宽度为4
+    bt3.layer.borderWidth = 4;
+    // 设置按钮层边框的颜色为浅灰色
+    bt3.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    
+    [self.view addSubview:bt1];
+    [self.view addSubview:bt2];
+    [self.view addSubview:bt3];
+}
+
+- (void) buttonTap:(UIButton*) button{
+    // 创建一个警告弹出窗口，当按钮被点击时，弹出此窗口
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Infomation" message:@"UIButton Event. " preferredStyle:UIAlertControllerStyleAlert];
+    // 创建一个按钮，作为提示窗口中的“确定”按钮，当用户点击此按钮时，将关闭提示窗口
+    UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:OKAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+}
+
+@end
+~~~
+
+
