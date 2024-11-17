@@ -3434,3 +3434,107 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/3e8b6d06-dc3a-494f-9438-029f651b58ec)
+
+## UITableView插入单元格
+~~~objective-c
+//
+//  ViewController.h
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import <UIKit/UIKit.h>
+
+
+@interface ViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+
+
+@end
+~~~
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@property (strong,nonatomic) NSMutableArray* months;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.months = [NSMutableArray arrayWithObjects:@"January",@"February",@"March",@"April",@"May",@"June",@"July",@"August",@"September",@"October",@"November",@"December",nil];
+    
+    CGRect rect = CGRectMake(0, 40, 320, 420);
+    UITableView *tableView = [[UITableView alloc] initWithFrame:rect];
+    // 在默认状态下，开启表格的编辑模式
+    [tableView setEditing:YES animated:NO];
+    
+    // 设置表格视图的数据源，为当前的视图控制器，既由当前的视图控制器，提供的单元格的数据、样式等信息
+    tableView.dataSource = self;
+    tableView.delegate = self;
+    
+    [self.view addSubview:tableView];
+}
+
+// 添加一个代理方法，用来设置表格视图，拥有单元格的行数
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.months.count;
+}
+
+// 添加一个代理方法，用来初始化或复用表格视图中的单元格
+- (UITableViewCell* )tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    // 创建一个字符串，作为单元格的复用标识符
+    NSString* identifier = @"reusedCell";
+    // 单元格的标识符，可以看作是一种复用机制，此方法可以从，所有已经开辟内存的单元格里面，选择一个具有同样标识符的、空闲的单元格
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    // 判断在可重用单元格队列中，是否拥有可以重复使用的单元格
+    if(cell == nil){
+        // 如果可重用单元格队列中，没有可以重复使用的单元格，则创建新的单元格，用新的单元格具有系统默认的单元格样式，并拥有一个复用标识符
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    
+    // 获取当前单元格，在段落中的行数，然后根据当前单元格的行数，生成一个序列化的字符串，作为当前单元格的标题文字
+    long rowNum = indexPath.row;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.months objectAtIndex:rowNum]];
+    
+    return cell;
+}
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return UITableViewCellEditingStyleInsert;
+}
+
+// 添加一个代理方法，用来响应单元格的删除事件
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    // 判断如果编辑模式为删除，执行后面的代码
+    if(editingStyle == UITableViewCellEditingStyleInsert){
+        // 获取待删除的单元格，在段落中的行数，从数组中将该单元格的内容清除，以保证数据的一致性
+        long rowNum = indexPath.row;
+        [self.months insertObject:@"Honey Moon" atIndex:rowNum];
+        
+        // 创建一个包含待插入单元格位置信息的数组
+        NSArray* indexPaths = @[indexPath];
+        // 再从表格视图中清除该单元格
+        [tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationRight];
+    }
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/778de3cc-ae36-4a0c-bbcd-cdc5df817701)
+![image](https://github.com/user-attachments/assets/4304fa52-c595-456e-9c48-5bc3b446c307)
+
