@@ -3074,3 +3074,83 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/5beb909c-fe11-4715-b1ee-a01c3f534277)
+
+## UITableView单元格图标
+~~~objective-c
+//
+//  ViewController.h
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import <UIKit/UIKit.h>
+
+// 添加一个表格视图的数据源协议，使用协议里的方法，设置单元格的内容和单元格的数量
+@interface ViewController : UIViewController<UITableViewDataSource>
+
+
+@end
+~~~
+
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    CGRect rect = CGRectMake(0, 40, 320, 420);
+    UITableView* tableView = [[UITableView alloc] initWithFrame:rect];
+    
+    // 设置表格视图的数据源，为当前的视图控制器，既由当前的视图控制器，提供的单元格的数据、样式等信息
+    tableView.dataSource = self;
+    
+    [self.view addSubview:tableView];
+}
+
+// 添加一个代理方法，用来设置表格视图，拥有单元格的行数
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return 5;
+}
+
+// 添加一个代理方法，用来初始化或复用表格视图中的单元格
+- (UITableViewCell* )tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    // 创建一个字符串，作为单元格的复用标识符
+    NSString* identifier = @"reusedCell";
+    // 单元格的标识符，可以看作是一种复用机制，此方法可以从，所有已经开辟内存的单元格里面，选择一个具有同样标识符的、空闲的单元格
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    // 判断在可重用单元格队列中，是否拥有可以重复使用的单元格
+    if(cell == nil){
+        // 如果可重用单元格队列中，没有可以重复使用的单元格，则创建新的单元格，用新的单元格具有系统默认的单元格样式，并拥有一个复用标识符
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+    }
+    cell.textLabel.text = @"Cell the Tittle";
+    cell.detailTextLabel.text = @"Detail information here";
+    
+    UIImage* star = [UIImage imageNamed:@"1"];
+    UIImage* starGray = [UIImage imageNamed:@"2"];
+    
+    cell.imageView.image = star;
+    cell.imageView.highlightedImage = starGray;
+    
+    return cell;
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/9aca8c07-f15b-41fe-b6ca-bf280ebde638)
