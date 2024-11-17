@@ -2729,4 +2729,62 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/b55776b2-dc6b-4a8a-b816-0ffb1cf41bb9)
 ![image](https://github.com/user-attachments/assets/a25da183-3bc9-4b15-b987-7d231db5b6e6)
 
+## 动作表样式警告窗口
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 动作表单窗口的使用，动作表单可以给用户展现一系列的选项，和警告窗口不同的是，动作表单的展示形式和设备的尺寸有关
+    UIButton* bt = [UIButton buttonWithType:UIButtonTypeSystem];
+        bt.frame = CGRectMake(20, 120, 280, 44);
+    [bt setTitle:@"Question" forState:UIControlStateNormal];
+    [bt addTarget:self action:@selector(showActionSheet) forControlEvents:UIControlEventTouchUpInside];
+    bt.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:bt];
+    
+}
+
+-(void) showActionSheet{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Infomation" message:@"What's your favorite" preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction* fishing = [UIAlertAction actionWithTitle:@"Fishing" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action){
+        NSLog(@"I like fishing");
+    }];
+    
+    UIAlertAction* hunting = [UIAlertAction actionWithTitle:@"hunting" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action){
+        NSLog(@"I like hunting");
+    }];
+    
+    UIAlertAction* nothing = [UIAlertAction actionWithTitle:@"nothing" style:UIAlertActionStyleDefault handler:^(UIAlertAction* _Nonnull action){
+        NSLog(@"I like nothing");
+    }];
+    
+    [alert addAction:fishing];
+    [alert addAction:hunting];
+    [alert addAction:nothing];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/91229c42-9667-479e-9a55-4a4a41fe6b9a)
+![image](https://github.com/user-attachments/assets/d22ff02a-84c2-418a-bf26-92e1f9fe1667)
+![image](https://github.com/user-attachments/assets/a31c1813-9ea6-47ab-9518-c56c1b569551)
 
