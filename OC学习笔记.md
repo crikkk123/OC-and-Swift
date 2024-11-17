@@ -2459,3 +2459,44 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/810216fb-1512-4c02-95d6-765de2139d0c)
 ![image](https://github.com/user-attachments/assets/2230bb0b-4014-41f4-b794-fc8caf1cd834)
 
+## UILabel
+
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 标签控件的基础
+    UILabel* label = [[UILabel alloc] initWithFrame:CGRectMake(20, 100, 280, 80)];
+    label.text = @"hello world";
+    UIFont* font = [UIFont fontWithName:@"Arial" size:24];
+    
+    label.shadowColor = [UIColor lightGrayColor];
+    label.shadowOffset = CGSizeMake(2, 2);
+    
+    label.textAlignment = NSTextAlignmentRight;
+    label.textColor = [UIColor purpleColor];
+    label.backgroundColor = [UIColor yellowColor];
+    
+    [self.view addSubview:label];
+}
+
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/6cb83e51-c82d-4e19-81e3-986341defff0)
