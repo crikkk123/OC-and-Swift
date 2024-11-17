@@ -2888,3 +2888,40 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/84daea05-5f0d-4485-b54f-b65d753f66d5)
+
+## WKWebView控件加载本地HTML
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+#import <WebKit/WebKit.h>
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    CGRect rect = CGRectMake(0, 80, 320, 460);
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:rect];
+    
+    NSString* html = @"<span style='font-size:72;'><font color='blue'>Hello</font>,<B>Xcode</B> and <i>Swift</i></span>";
+    
+    // 网页视图对象加载字符串
+    [webView loadHTMLString:html baseURL:nil];
+    
+    [self.view addSubview:webView];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/3963cfc5-f43d-4171-bdd4-e84a958b6a60)
