@@ -3154,3 +3154,93 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/9aca8c07-f15b-41fe-b6ca-bf280ebde638)
+
+## UITableView
+~~~objective-c
+//
+//  ViewController.h
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import <UIKit/UIKit.h>
+
+// 添加一个表格视图的数据源协议，使用协议里的方法，设置单元格的内容和单元格的数量
+@interface ViewController : UIViewController<UITableViewDataSource>
+
+
+@end
+~~~
+
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+// 添加一个数组属性，作为表格的数据来源，另一个表格属性，表示需要使用到的表格视图对象
+@property (strong,nonatomic) NSArray* months;
+@property (strong,nonatomic) UITableView* tableView;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.months = [NSArray arrayWithObjects:@"January",@"February",@"March",@"April",@"May",@"June",@"July",@"August",@"September",@"October",@"November",@"December",nil];
+    
+    CGRect rect = CGRectMake(0, 40, 320, 200);
+    self.tableView = [[UITableView alloc] initWithFrame:rect];
+    
+    // 设置表格视图的数据源，为当前的视图控制器，既由当前的视图控制器，提供的单元格的数据、样式等信息
+    self.tableView.dataSource = self;
+    
+    [self.view addSubview:self.tableView];
+}
+
+// 添加视图完成显示的方式，在该方法里实现表格的滑动的效果
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    // 初始化一个索引路径对象，用来表示表格中的第一个段落和第12行的位置
+    NSIndexPath* indexPath = [NSIndexPath indexPathForRow:11 inSection:0];
+    // 调用表格对象的滚动到指定位置的方法，表格将以动画的方法，滑动到指定索引位置
+    [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+// 添加一个代理方法，用来设置表格视图，拥有单元格的行数
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return self.months.count;
+}
+
+// 添加一个代理方法，用来初始化或复用表格视图中的单元格
+- (UITableViewCell* )tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    // 创建一个字符串，作为单元格的复用标识符
+    NSString* identifier = @"reusedCell";
+    // 单元格的标识符，可以看作是一种复用机制，此方法可以从，所有已经开辟内存的单元格里面，选择一个具有同样标识符的、空闲的单元格
+    UITableViewCell* cell = [tableView dequeueReusableCellWithIdentifier:identifier];
+    
+    // 判断在可重用单元格队列中，是否拥有可以重复使用的单元格
+    if(cell == nil){
+        // 如果可重用单元格队列中，没有可以重复使用的单元格，则创建新的单元格，用新的单元格具有系统默认的单元格样式，并拥有一个复用标识符
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
+    }
+    
+    long rowNum = indexPath.row;
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[self.months objectAtIndex:rowNum]];
+    
+    return cell;
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/46af5680-6c45-421a-8419-88ade7a3b54e)
