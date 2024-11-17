@@ -2621,4 +2621,58 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/4ce4e85c-fe03-497f-a3c3-936ad55640c8)
 ![image](https://github.com/user-attachments/assets/92db7f61-29ab-4639-b014-162c27c385fe)
 
+## UITextField
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 文本输入框控制件的基本用法，文本输入框主要用于接收和显示用户输入的内容
+    UITextField* textField = [[UITextField alloc] initWithFrame:CGRectMake(60, 80, 200, 30)];
+    // 设置文本框对象的边框样式为圆角矩形
+    textField.borderStyle = UITextBorderStyleRoundedRect;
+    // 设置文本框的占位符属性，用来描述输入字段预期值的提示信息，该提示会在输入字段为空时显示，并会在字段获得焦点时消失
+    textField.placeholder = @"Your Email ";
+    // 关闭文本框对象的语法错误提示功能
+    textField.autocorrectionType = UITextAutocorrectionTypeNo;
+    // 设置在输入文字时，在键盘面板上回车按钮的类型
+    textField.returnKeyType = UIReturnKeyDone;
+    // 设置文本框对象右侧的清除按钮，仅在编辑状态时显示
+    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+    // 设置文本框对象的键盘类型，为系统提供的邮箱地址类型
+    textField.keyboardType = UIKeyboardTypeEmailAddress;
+    // 设置文本框对象的键盘为暗色主题
+    textField.keyboardAppearance = UIKeyboardAppearanceDark;
+    
+    textField.delegate = self;
+    [self.view addSubview:textField];
+}
+
+// 添加一个代理方法，当用户按下键盘上的回车键时，调用此方法
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    NSLog(@"textField.content = %@",[textField text]);
+    // 使文本框失去焦点，键盘也将自动隐藏，在方法的末尾返回一个布尔值，表示允许结束文字输入的状态
+    [textField resignFirstResponder];
+    return YES;
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/ffdba654-98bf-4d53-96b4-de7bba43d1c5)
+![Uploading image.png…]()
 
