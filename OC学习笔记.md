@@ -2676,4 +2676,57 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/ffdba654-98bf-4d53-96b4-de7bba43d1c5)
 ![image](https://github.com/user-attachments/assets/925393fc-90fb-4b1a-8238-4da4be87c764)
 
+## 普通警告窗口
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 警告窗口的使用方法，警告窗口不仅可以给用户展现提示信息，还可以提供若干选项供用户选择
+    UIButton* bt = [UIButton buttonWithType:UIButtonTypeSystem];
+    bt.frame = CGRectMake(20, 120, 280, 44);
+    [bt setTitle:@"Question" forState:UIControlStateNormal];
+    [bt addTarget:self action:@selector(showAlert) forControlEvents:UIControlEventTouchUpInside];
+    bt.backgroundColor = [UIColor lightGrayColor];
+    [self.view addSubview:bt];
+}
+
+-(void) showAlert{
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Infomation" message:@"Are you a student" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* yes = [UIAlertAction actionWithTitle:@"YES" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action){
+        NSLog(@"Yes, I'm a student");
+    }];
+    UIAlertAction* no = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:^(UIAlertAction* action){
+        NSLog(@"No, I'm not a student");
+    }];
+    
+    [alert addAction:yes];
+    [alert addAction:no];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/7ed21a5f-d050-4591-aa19-befaaf2fdced)
+![image](https://github.com/user-attachments/assets/38421725-c59c-48dd-9e31-2ee4ac07d25e)
+![image](https://github.com/user-attachments/assets/b55776b2-dc6b-4a8a-b816-0ffb1cf41bb9)
+![image](https://github.com/user-attachments/assets/a25da183-3bc9-4b15-b987-7d231db5b6e6)
+
 
