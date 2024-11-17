@@ -2850,3 +2850,41 @@ NS_ASSUME_NONNULL_END
 ### 效果
 ![image](https://github.com/user-attachments/assets/818f38cb-5ac8-404e-8edb-e6c73b6bc2e9)
 ![image](https://github.com/user-attachments/assets/cc5ae614-ab89-4d26-b3c7-67eedd91e8be)
+
+## WKWebView控件加载网页
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+#import <WebKit/WebKit.h>
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    CGRect rect = CGRectMake(0, 0, 320, 568);
+    WKWebView* webView = [[WKWebView alloc] initWithFrame:rect];
+    
+    NSURL* url = [NSURL URLWithString:@"https://www.apple.com"];
+    // 创建一个网址请求对象，作为网页视图对象的网络请求
+    NSURLRequest* request = [NSURLRequest requestWithURL:url];
+    
+    // 使用网页视图对象，加载设置的网址
+    [webView loadRequest:request];
+    [self.view addSubview:webView];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/84daea05-5f0d-4485-b54f-b65d753f66d5)
