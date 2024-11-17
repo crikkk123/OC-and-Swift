@@ -2788,3 +2788,65 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/d22ff02a-84c2-418a-bf26-92e1f9fe1667)
 ![image](https://github.com/user-attachments/assets/a31c1813-9ea6-47ab-9518-c56c1b569551)
 
+## UIDatePicker日期时间选择器
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 日期拾取器控件的使用，可以快速设置和选择日期与时间
+    UIDatePicker* datePicker = [[UIDatePicker alloc] init];
+    datePicker.center = CGPointMake(160, 200);
+    // 设置日期拾取器的标识值，以便将来再次使用它
+    datePicker.tag = 1;
+    // 设置日期拾取器的最小值，最小值为当前的日期
+    datePicker.minimumDate = [NSDate date];
+    datePicker.maximumDate = [NSDate dateWithTimeInterval:3*24*60*60 sinceDate:[NSDate date]];
+    [self.view addSubview:datePicker];
+    
+    UIButton* bt = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    bt.frame = CGRectMake(20, 360, 280, 44);
+    bt.backgroundColor = [UIColor lightGrayColor];
+    [bt setTitle:@"Get date" forState:UIControlStateNormal];
+    [bt addTarget:self action:@selector(getDate) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:bt];
+}
+
+-(void) getDate{
+    // 通过标识值获得当前日期拾取器对象
+    UIDatePicker* datePicker = [self.view viewWithTag:1];
+    // 获得日期拾取器的日期值
+    NSDate* date = datePicker.date;
+    // 新建一个日期格式化对象，用来实现日期的格式化
+    NSDateFormatter* dateFormater = [[NSDateFormatter alloc] init];
+    // 设置日期的格式，大写字母H，表示采用24小时制
+    dateFormater.dateFormat = @"yyyy-MM-dd HH:mm";
+    NSString* dateAndTime = [dateFormater stringFromDate:date];
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Infomation" message:dateAndTime preferredStyle:UIAlertControllerStyleAlert];
+        
+    UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:OKAction];
+    // 在当前视图控制器中，展示提示窗口
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/818f38cb-5ac8-404e-8edb-e6c73b6bc2e9)
+![image](https://github.com/user-attachments/assets/cc5ae614-ab89-4d26-b3c7-67eedd91e8be)
