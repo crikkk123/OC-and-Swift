@@ -2500,3 +2500,73 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/6cb83e51-c82d-4e19-81e3-986341defff0)
+
+## UILabel自定义
+~~~objective-c
+//
+//  MyLabel.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "MyLabel.h"
+
+@implementation MyLabel
+
+// 标签对象添加描边效果
+// 首先重载父类的绘图方法，这样就可以从底层来自自定义标签的形状来
+- (void) drawTextInRect:(CGRect)rect{
+    // 获取当前图形环境的上下文
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // 设置在上下文中，文字的渲染模式为描边模式
+    CGContextSetTextDrawingMode(context, kCGTextStroke);
+    // 设置文字秒描边的边框宽度为2
+    CGContextSetLineWidth(context, 2);
+    // 设置文字描边的顶点连接方式为圆角方式
+    CGContextSetLineJoin(context, kCGLineJoinRound);
+    self.textColor = [UIColor whiteColor];
+    [super drawTextInRect:rect];
+    
+    // 设置在上下文中，文字的渲染模式为填充
+    CGContextSetTextDrawingMode(context, kCGTextFill);
+    self.textColor = [UIColor blackColor];
+    [super drawTextInRect:rect];
+}
+
+@end
+~~~
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+#import "MyLabel.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    MyLabel* label = [[MyLabel alloc] init];
+    label.frame = CGRectMake(120, 180, 240, 120);
+    label.text = @"hello object-c";
+    label.font = [UIFont fontWithName:@"Georgia" size:56];
+    
+    [self.view addSubview:label];
+    self.view.backgroundColor = [UIColor purpleColor];
+}
+
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/8f3019b7-1274-4282-9c37-634034d8abe0)
