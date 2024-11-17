@@ -2570,3 +2570,55 @@ NS_ASSUME_NONNULL_END
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/8f3019b7-1274-4282-9c37-634034d8abe0)
+
+## UISwitch
+~~~objective-c
+//
+//  ViewController.m
+//  Kit
+//
+//  Created by cr on 2024/11/16.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 开关控件的基本用法，开关控件有两个互斥的选项，用来打开或者关闭选项的控件
+    UISwitch* uiSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(130, 100, 0, 0)];
+    // 设置开关对象的默认状态为选中
+    [uiSwitch setOn:YES animated:YES];
+    // 给开关对象添加状态变化事件
+    [uiSwitch addTarget:self action:@selector(switchChanged:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:uiSwitch];
+}
+
+- (void) switchChanged:(UISwitch*) uiSwitch{
+    NSString* message = @"Turn on the switch.";
+    if(!uiSwitch.isOn){
+        message = @"Turn off the switch";
+    }
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Information" message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* OKAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    
+    [alert addAction:OKAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+@end
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/4aa9bb65-c169-4fd0-a898-588710304051)
+![image](https://github.com/user-attachments/assets/4ce4e85c-fe03-497f-a3c3-936ad55640c8)
+![image](https://github.com/user-attachments/assets/92db7f61-29ab-4639-b014-162c27c385fe)
+
+
