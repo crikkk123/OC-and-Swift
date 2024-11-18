@@ -2,13 +2,7 @@
 
 ## SDWebImage
 
-～～～objective-c
-//
-//  ViewController.m
-//  testWeb
-//
-//  Created by Caorui(曹锐)[运营中心] on 2024/11/18.
-//
+~~~objective-c
 
 #import "ViewController.h"
 #import <SDWebImage/UIImageView+WebCache.h>
@@ -34,7 +28,7 @@
 
 
 @end
-～～～
+~~~
 
 ### 效果
 
