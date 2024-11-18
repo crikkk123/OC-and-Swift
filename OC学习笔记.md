@@ -1942,7 +1942,7 @@ Xcode
 ![image-20241109122157707](https://github.com/user-attachments/assets/8d5e8bf1-10f3-4824-aeb1-ced8ed7d7ee6)
 
 
-## 8、图片文理（平铺整个界面）
+## 8、图片纹理（平铺整个界面）
 
 ~~~objective-c
 #import "ViewController.h"
