@@ -3336,7 +3336,7 @@ NS_ASSUME_NONNULL_END
 ![image](https://github.com/user-attachments/assets/8d5665be-b9b6-4608-be5d-06de3617408e)
 
 ## 删除UITableView单元格
-~~objective-c
+~~~objective-c
 //
 //  ViewController.h
 //  Kit
