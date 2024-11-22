@@ -23,6 +23,5 @@ let `class` = "Runoob"
 let theInput = readLine()
 
 ~~~
-~~~text
+Swift的结束不用写分号，但是一行两个语句时需要加分号
 
-~~~
