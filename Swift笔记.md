@@ -1,6 +1,6 @@
 # Swift基础用法
 ## Swift基础
-～～～Swift
+~~~Swift
 import Foundation
 
 print("Hello, World!")
@@ -16,5 +16,5 @@ print("Hello, World!")
  
 */
 
-～～～
+~~~
 ### 效果
