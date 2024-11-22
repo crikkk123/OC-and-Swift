@@ -16,5 +16,13 @@ print("Hello, World!")
  
 */
 
+// 使用关键字作为标识符,在关键字前后添加重音符号（`）
+let `class` = "Runoob"
+
+// 接收用户的输入
+let theInput = readLine()
+
 ~~~
-### 效果
+~~~text
+
+~~~
