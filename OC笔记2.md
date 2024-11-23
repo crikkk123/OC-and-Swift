@@ -277,3 +277,73 @@
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/aab929d8-a1ed-41c9-a6fe-b76c684f8856)
+
+
+# 数据解析和网络编程
+
+## 程序沙箱结构中常用的几个目录
+~~~Objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 获取程序沙箱结构中，常见的几个目录
+    
+    // 获得应用程序的路径，包含三个文件夹：文档目录，库目录，临时目录以及一个程序包，该目录就是应用程序的沙盒，程序只能访问该目录下的内容
+    NSString* homePath = NSHomeDirectory();
+    NSLog(@"homePath:\(homePath)");
+    
+    // 系统会为每个程序，生成一个私有目录，并随即生成一个数字字母串作为目录名，在每次程序启动时，这个目录的名称都是不同的，而使用此方法可以获得对应的目录集合
+    NSArray* documentPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    // 获得并输出目录集合中的第一个元素，即沙箱中的文档目录，将应用程序的所有数据文件，写入这个目录下，这个目录通常用于存储用户数据
+    NSLog(@"documentPath1:%@",documentPaths[0]);
+    // 创建一个字符串对象，该字符串对象同样表示沙箱中的文档目录
+    NSString* documentPath2 = [homePath stringByAppendingString:@"/Documents"];
+    // 打印目录，与上条日志比较是否相同
+    NSLog(@"documentPath2:%@",documentPath2);
+    
+    // 获得沙箱下的库目录，包含两个子目录：缓存目录和参数目录
+    NSArray* libraryPaths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSLog(@"libraryPath1:%@",libraryPaths[0]);
+    // 创建一个字符串对象，表示沙箱中的库目录
+    NSString* libraryPath2 = [homePath stringByAppendingString:@"/Library"];
+    // 打印目录，与上条日志比较是否相同
+    NSLog(@"libraryPath2:%@",libraryPath2);
+    
+    // 获得沙箱下的缓存目录
+    NSArray* cachePaths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    // 存放应用程序专用的支持文件，保持应用程序再次启动过程中，需要的信息
+    NSLog(@"cachePath1:%@",cachePaths[0]);
+    // 沙箱中的缓存目录
+    NSString* cachePath2 = [homePath stringByAppendingString:@"/Library/Caches"];
+    // 打印目录，与上条日志比较是否相同
+    NSLog(@"cachePath2:%@",cachePath2);
+    
+    // 创建一个常量，用来存储当前用户的临时路径
+    NSString* tmpPath1 = NSTemporaryDirectory();
+    NSLog(@"%@",tmpPath1);
+    // 表示沙箱中的临时目录
+    NSString* tmpPath2 = [homePath stringByAppendingString:@"/tmp"];
+    NSLog(@"%@",tmpPath2);
+}
+
+
+@end
+
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/3de86732-c393-4d5b-aa89-ff8dbca4eb54)
