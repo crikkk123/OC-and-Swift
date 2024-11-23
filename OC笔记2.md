@@ -127,7 +127,7 @@
 ### 效果
 ![image](https://github.com/user-attachments/assets/f1a8bf98-957a-4a7e-9807-d9c2d26fcc59)
 
-## CoreImage框架设置图片的色相效果
+## CoreImage框架设置图片的单色效果
 ~~~objective-c
 //
 //  ViewController.m
@@ -179,3 +179,52 @@
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/b1fcbdd4-d2b5-4b64-b009-470a4fd8915c)
+
+## CoreImage框架更改图片的色相
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+// 导入使用的框架，提供了强大和高效的图像处理功能，用来基于像素的图像进行分析，操作和特效处理
+#import <CoreImage/CoreImage.h>
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 使用图像处理框架，将图片转换成单色调样式
+    UIImage* image = [UIImage imageNamed:@"1"];
+    UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+    [self.view addSubview:imageView];
+    
+    // 初始化一个CoreImage图像对象，并加载之前导入的图片
+    CIImage* ciImage = [[CIImage alloc] initWithImage:image];
+    // 初始化一个滤镜对象，并设置滤镜类型为色相调整滤镜
+    CIFilter* filter = [CIFilter filterWithName:@"CIHueAdjust"];
+    // 设置色相调整滤镜的输入角度值为30度
+    [filter setValue:[NSNumber numberWithDouble:3.14/6] forKey:kCIInputAngleKey];
+    // 设置需要应用色相调整滤镜的图像
+    [filter setValue:ciImage forKey:kCIInputImageKey];
+    // 获得应用色相调整滤镜后的图像
+    CIImage* outImage = filter.outputImage;
+    
+    imageView.image = [UIImage imageWithCIImage:outImage];
+}
+
+
+@end
+
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/1f55a28e-2454-4694-bab9-db1af39fc830)
