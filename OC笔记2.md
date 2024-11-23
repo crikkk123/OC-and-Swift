@@ -347,3 +347,50 @@
 ~~~
 ### 效果
 ![image](https://github.com/user-attachments/assets/3de86732-c393-4d5b-aa89-ff8dbca4eb54)
+
+## 创建文件夹
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 文件管理对象的主要功能包括：读取文件中的数据，向一个文件中写入数据、删除或复制文件、移动文件、比较两个文件的内容或测试文件的存在性等
+    NSFileManager* manager = [NSFileManager defaultManager];
+    
+    // 创建一个字符串对象，该字符串对象表示文档目录下的一个文件夹
+    NSString* baseUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/txtFolder1"];
+    // 使用文件管理对象，判断文件夹是否存在，并把结果存储在常量中
+    BOOL exist = [manager fileExistsAtPath:baseUrl];
+    if(!exist){
+        // 首先创建一个异常捕捉语句，用于创建一个新的文件夹
+        NSError* error;
+        // 使用try语句，创建指定位置上的文件夹
+        [manager createDirectoryAtPath:baseUrl withIntermediateDirectories:YES attributes:nil error:&error];
+        if(error == nil){
+            NSLog(@"Success to create folder");
+        }
+        else{
+            NSLog(@"Error to create folder:%@",[error description]);
+        }
+    }
+}
+
+
+@end
+
+~~~
+### 效果
