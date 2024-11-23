@@ -127,8 +127,55 @@
 ### 效果
 ![image](https://github.com/user-attachments/assets/f1a8bf98-957a-4a7e-9807-d9c2d26fcc59)
 
-## 使用CoreImage框架更改图片的色相
+## CoreImage框架设置图片的色相效果
 ~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+// 导入使用的框架，提供了强大和高效的图像处理功能，用来基于像素的图像进行分析，操作和特效处理
+#import <CoreImage/CoreImage.h>
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 使用图像处理框架，将图片转换成单色调样式
+    UIImage* image = [UIImage imageNamed:@"1"];
+    UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+    [self.view addSubview:imageView];
+    
+    // 初始化一个CoreImage图像对象，并加载之前导入的图片
+    CIImage* ciImage = [[CIImage alloc] initWithImage:image];
+    // 初始化一个颜色对象，并设置其颜色为棕色，其参数值介于0和1之间
+    CIColor* color = [[CIColor alloc] initWithRed:0.8 green:0.6 blue:0.4];
+    // 初始化一个滤镜对象，并设置滤镜类型为单色调滤镜
+    CIFilter* filter = [CIFilter filterWithName:@"CIColorMonochrome"];
+    // 设置单色调滤镜的输入颜色值
+    [filter setValue:color forKey:kCIInputColorKey];
+    // 设置单色调滤镜的颜色浓度值
+    [filter setValue:@1.0 forKey:kCIInputIntensityKey];
+    // 设置需要应用单色调滤镜的图像
+    [filter setValue:ciImage forKey:kCIInputImageKey];
+    // 获得应用单色调滤镜后的图像
+    CIImage* outImage = filter.outputImage;
+    // 更改图像视图的内容，为应用滤镜后的图像
+    imageView.image = [UIImage imageWithCIImage:outImage];
+}
+
+
+@end
 
 ~~~
 ### 效果
+![image](https://github.com/user-attachments/assets/b1fcbdd4-d2b5-4b64-b009-470a4fd8915c)
