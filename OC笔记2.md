@@ -594,3 +594,47 @@
 ### 效果
 ![image](https://github.com/user-attachments/assets/e7aeb44a-696b-4d16-863c-245ab9373e33)
 
+## 读取和解析Plist属性列表文件
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 用来存储、串行化后的对象文件
+    
+    // 获取属性列表文件，在项目中的路径
+    NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"DemoPlist" ofType:@"plist"];
+    // 加载属性列表文件，并存入一个可变字典对象中
+    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:plistPath];
+    // 将字典对象转换为字符串对象
+    NSString* message = data.description;
+    NSString* name = data[@"name"];
+    NSString* age = data[@"age"];
+    
+    NSLog(@"message:%@",message);
+    NSLog(@"name:%@",name);
+    NSLog(@"age:%@",age);
+}
+
+
+@end
+
+~~~
+
+### 效果
+![image](https://github.com/user-attachments/assets/421b20ea-b2a4-40d7-b998-5cf9c5486f47)
+![image](https://github.com/user-attachments/assets/3488cd60-59e9-4ee4-b524-02e25d7806cc)
