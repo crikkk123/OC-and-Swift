@@ -441,4 +441,117 @@
 ### 效果
 ![image](https://github.com/user-attachments/assets/3104ca14-ca66-44ca-a920-908f93865a1c)
 
+## 复制、移动、删除文件
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
 
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self copyFile];
+    [self moveFile];
+    [self removeFile];
+    [self removeFolder];
+    [self listFolder];
+}
+
+// 用来复制一个文件
+- (void)copyFile{
+    // 文件管理对象的主要功能包括：读取文件中的数据，向一个文件中写入数据、删除或复制文件、移动文件、比较两个文件的内容或测试文件的存在性等
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+    // 创建一个字符串对象，该字符串对象表示文档目录下的一个文件夹
+    NSString* sourceUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/swift.txt"];
+    NSString* targetUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/swift_bak.txt"];
+    
+    // 将文本文件复制到目标位置
+    NSError* error;
+    [fileManager copyItemAtURL:sourceUrl toURL:targetUrl error:&error];
+    if(error == nil){
+        NSLog(@"Success to copy file");
+    } else{
+        NSLog(@"Failed to copy file");
+    }
+}
+
+// 移动一个文件
+-(void)moveFile{
+    // 文件管理对象的主要功能包括：读取文件中的数据，向一个文件中写入数据、删除或复制文件、移动文件、比较两个文件的内容或测试文件的存在性等
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+    // 创建一个字符串对象，该字符串对象表示文档目录下的一个文件夹
+    NSString* sourceUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/products.plist"];
+    NSString* targetUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/backUp"];
+    
+    NSError* error;
+    [fileManager moveItemAtURL: sourceUrl toURL:targetUrl error:&error];
+    if(error == nil){
+        NSLog(@"Success to move file");
+    } else{
+        NSLog(@"Failed to move file");
+    }
+}
+
+// 删除一个文件
+-(void) removeFile{
+    // 文件管理对象的主要功能包括：读取文件中的数据，向一个文件中写入数据、删除或复制文件、移动文件、比较两个文件的内容或测试文件的存在性等
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    
+    // 创建一个字符串对象，该字符串对象表示文档目录下的一个文件夹
+    NSString* sourceUrl = [NSHomeDirectory() stringByAppendingString:@"/Documents/products.plist"];
+    
+    NSError* error;
+    [fileManager removeItemAtURL:sourceUrl error:&error];
+    if(error == nil){
+        NSLog(@"Success to remove file");
+    } else{
+        NSLog(@"Failed to remove file");
+    }
+}
+
+// 删除文件夹下的内容
+-(void)removeFolder{
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSString* folder = [NSHomeDirectory() stringByAppendingString:@"/Documents/backup/"];
+    
+    // 获得目录下的所有子文件夹
+    NSArray* items = [fileManager subpathsAtPath:folder];
+    for(NSString* item in items){
+        NSError* error;
+        [fileManager removeItemAtURL:item error:&error];
+        if(error == nil){
+            NSLog(@"Success to remove item");
+        } else{
+            NSLog(@"failed to remove item");
+        }
+    }
+}
+
+
+// 检查和遍历在复制、移动和删除等操作之后的文件夹
+- (void)listFolder{
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSString* url = [NSHomeDirectory() stringByAppendingString:@"/Documents/"];
+    
+    NSDirectoryEnumerator* items = [fileManager enumeratorAtPath:url];
+    NSLog(@"items:%@",[items allObjects]);
+}
+
+@end
+
+~~~
+### 效果
+后面补上
