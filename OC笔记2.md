@@ -398,6 +398,47 @@
 
 ## 对文件夹进行遍历操作
 ~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
 
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 文件管理对象的主要功能包括：读取文件中的数据，向一个文件中写入数据、删除或复制文件、移动文件、比较两个文件的内容或测试文件的存在性等
+    NSFileManager* manager = [NSFileManager defaultManager];
+    
+    // 创建一个字符串对象，该字符串对象表示文档目录下的一个文件夹
+    NSString* url = [NSHomeDirectory() stringByAppendingString:@"/Documents/"];
+    
+    NSError* error;
+    NSArray* contents = [manager contentsOfDirectoryAtPath:url error:&error];
+    NSLog(@"contents:%@",contents);
+    
+    if(error != nil){
+        NSLog(@"Error occurs");
+    }
+    
+    NSDirectoryEnumerator* contents2 = [manager enumeratorAtPath:url];
+    NSLog(@"contents2:%@",contents2.allObjects);
+}
+
+
+@end
 ~~~
+
 ### 效果
+![image](https://github.com/user-attachments/assets/3104ca14-ca66-44ca-a920-908f93865a1c)
+
+
