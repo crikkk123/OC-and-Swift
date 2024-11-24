@@ -555,3 +555,42 @@
 ~~~
 ### 效果
 后面补上
+
+## 退出系统前的事件处理
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // 获得一个应用实例，提供程序运行期间的控制和协作，每一个程序必须有，且只有一个应用实例
+    UIApplication* app = [UIApplication sharedApplication];
+    
+    // 通知中心是基础框架的子系统，下面是向所有监听程序退出事件的对象，广播消息
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSomething:) name:UIApplicationWillResignActiveNotification object:app];
+}
+
+// 创建一个方法，用来响应程序退出事件，使程序在退出前，保存用户数据
+-(void)doSomething:(NSNotificationCenter*) notification{
+    NSLog(@"Saving data before exit.");
+}
+
+@end
+
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/e7aeb44a-696b-4d16-863c-245ab9373e33)
+
