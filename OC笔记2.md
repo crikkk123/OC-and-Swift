@@ -638,3 +638,121 @@
 ### 效果
 ![image](https://github.com/user-attachments/assets/421b20ea-b2a4-40d7-b998-5cf9c5486f47)
 ![image](https://github.com/user-attachments/assets/3488cd60-59e9-4ee4-b524-02e25d7806cc)
+
+## NSKeyedArchiver存储和解析数据
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+// 创建一个继承自NSObject的类，并遵守NSCoding协议，遵循该协议的类，可以被序列化和反序列化，这样可以归档到磁盘上或分发到网络上
+@interface UserModel : NSObject<NSCoding,NSCopying>
+
+@property(nonatomic,retain) NSString* name;
+@property(nonatomic,retain) NSString* password;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+~~~
+~~~objective-c
+//
+//  UserModel.m
+//  imageTest
+//
+//  Created by cr on 2024/11/24.
+//
+
+#import "UserModel.h"
+
+
+@implementation UserModel
+
+// 添加一个协议方法，用来对模型对象进行序列化操作，在这个方法里，对模型的姓名和密码属性，进行编码操作，并设置对应的键名
+- (void) encodeWithCoder:(NSCoder *)coder{
+    [coder encodeObject:_name forKey:@"_name"];
+    [coder encodeObject:_password forKey:@"_password"];
+}
+
+
+// 添加另一个来自协议的方法，用来对模型对象进行反序列化操作
+- (instancetype)initWithCoder:(NSCoder *)coder{
+// 对模型对象的姓名和密码属性，根据对应的键名，进行解码操作，并返回初始化的对象
+    if(self == [super init]){
+        _name = [coder decodeObjectForKey:@"_name"];
+        _password = [coder decodeObjectForKey:@"_password"];
+    }
+    return self;
+}
+
+// 实现NSCopying协议的方法，用来响应拷贝的消息
+- (id)copyWithZone:(NSZone *)zone{
+    UserModel* model = [[[self class] allocWithZone:zone] init];
+    model.name = [self.name copyWithZone:zone];
+    model.password = [self.password copyWithZone:zone];
+    return model;
+}
+
+@end
+
+~~~
+~~~objective-c
+//
+//  ViewController.m
+//  imageTest
+//
+//  Created by cr on 2024/11/21.
+//
+
+#import "ViewController.h"
+#import "UserModel.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 如何使用归档的方法，对模型对象进行持久化工作
+    
+    UserModel* user1 = [[UserModel alloc] init];
+    user1.name = @"Jerry";
+    user1.password = @"123";
+    
+    // 创建一个可变二进制数据对象，用来存储归档后的模型对象
+    NSMutableData* data = [[NSMutableData alloc] init];
+    // 初始化一个键值归档对象
+    NSKeyedArchiver* archive = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    // 对模型对象进行归档操作，归档指的是将对象存储为一个文件，或者网络上的一个数据块
+    [archive encodeObject:user1 forKey:@"user1Key"];
+    // 完成归档的编码，序列化工作
+    [archive finishEncoding];
+    
+    NSString* path = [NSHomeDirectory() stringByAppendingString:@"/Documents/contacts.data"];
+    // 将归档文件存储在程序包的指定位置
+    [data writeToFile:path atomically:YES];
+    
+    // 对归档文件进行加载和恢复归档的操作
+    NSMutableData* data2 = [NSMutableData dataWithContentsOfFile:path];
+    // 对文件进行恢复归档的操作，恢复归档指的是将一个来自文件或网络的归档数据块，恢复成内存中的一个对象
+    NSKeyedUnarchiver* unarchi = [[NSKeyedUnarchiver alloc] initForReadingWithData:data2];
+    
+    // 根据设置的键名，对数据进行恢复归档的操作，并获得最终结果
+    UserModel* savedUser = [unarchi decodeObjectForKey:@"user1Key"];
+    // 完成对象的解码操作
+    [unarchi finishDecoding];
+    
+    NSLog(@"%@",savedUser.name);
+    NSLog(@"%@",savedUser.password);
+}
+
+
+@end
+
+~~~
+### 效果
+![image](https://github.com/user-attachments/assets/d5c29cfa-e6a8-4061-81cb-b4e3af69bfad)
+![image](https://github.com/user-attachments/assets/185f24c2-cf7c-4738-8f7f-bef5315ac309)
