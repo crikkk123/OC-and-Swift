@@ -756,3 +756,9 @@ NS_ASSUME_NONNULL_END
 ### 效果
 ![image](https://github.com/user-attachments/assets/d5c29cfa-e6a8-4061-81cb-b4e3af69bfad)
 ![image](https://github.com/user-attachments/assets/185f24c2-cf7c-4738-8f7f-bef5315ac309)
+
+## 解析XML文档
+~~~objective-c
+
+~~~
+### 效果
