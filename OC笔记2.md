@@ -394,3 +394,10 @@
 
 ~~~
 ### 效果
+![image](https://github.com/user-attachments/assets/c70b72fc-6461-4d13-8212-0b49934a31cc)
+
+## 对文件夹进行遍历操作
+~~~objective-c
+
+~~~
+### 效果
