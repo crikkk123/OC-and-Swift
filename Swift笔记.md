@@ -35,3 +35,7 @@ let anotherPi = 3 + 0.14159   // anotherPi 会被推测为 Double 类型
 ~~~
 Swift的结束不用写分号，但是一行两个语句时需要加分号
 
+## Swift简单类型
+~~~swift
+
+~~~
