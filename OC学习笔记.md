@@ -1122,7 +1122,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-### 扩展
+## 9、扩展
 
 ### 用法
 
@@ -1162,7 +1162,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-## 9、协议
+## 10、协议
 
 ### 基本用法
 
@@ -1224,7 +1224,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-## 10、错误NSError
+## 11、错误NSError
 
 ### 基本用法
 
@@ -1280,7 +1280,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-## 11、try catch finally
+## 12、try catch finally
 
 ### 基本用法
 
@@ -1306,7 +1306,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-## 12、内存管理
+## 13、内存管理
 
 ### MRC与ARC（自动管理内存与手动管理内存）
 
@@ -1360,7 +1360,7 @@ int main(int argc,const char* argv[]){
 }
 ~~~
 
-## 13、ARC内存管理
+## 14、ARC内存管理
 
 ### 基本用法
 
