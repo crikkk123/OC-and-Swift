@@ -658,7 +658,15 @@ int main(int argc,const char* argv[]){
 
 ## 11、property
 ~~~objective-c
-    
+    @property 的属性可以有以下几种：
+
+readwrite 是可读可写特性；需要生成 getter 方法和 setter 方法
+readonly 是只读特性，只会生成 getter 方法 不会生成 setter 方法，不希望属性在类外改变时使用
+assign 是赋值特性，setter 方法将传入参数赋值给实例变量；仅设置变量时；
+retain 表示持有特性，setter 方法将传入参数先保留，再赋值，传入参数的 retain count 会+1;
+copy 表示拷贝特性，setter 方法将传入对象复制一份；需要完全一份新的变量时。
+nonatomic 和 atomic ，决定编译器生成的 setter getter是否是原子操作。 atomic 表示使用原子操作，可以在一定程度上保证线程安全。一般推荐使用 nonatomic ，因为 nonatomic 编译出的代码更快
+默认的 @property 是 readwrite，assign，atomic。
 ~~~
 
 # 二、结构体、类、闭包
