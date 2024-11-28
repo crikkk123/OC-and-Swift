@@ -679,6 +679,17 @@ int main(int argc,const char* argv[]){
     会在各自的方法列表中去根据 SEL 去寻找自己对应的IMP。这使得OC可以支持函数重写
 ~~~
 
+## 13、消息传递机制
+~~~text
+如下用于描述 objc_msgSend 函数的调用流程：
+
+    1.检测 SEL 是否应该被忽略
+    2.检测发送的 target 是否为 nil ，如果是则忽略该消息
+    3.
+    当调用实例方法时，通过 isa 指针找到实例对应的 class 并且在其中的缓存方法列表以及方法列表中进行查询，如果找不到则根据 super_class 指针在父类中查询，直至根类(NSObject 或 NSProxy).
+    当调用类方法时，通过 isa 指针找到实例对应的 metaclass 并且在其中的缓存方法列表以及方法列表中进行查询，如果找不到则根据 super_class 指针在父类中查询，直至根类(NSObject 或 NSProxy). (根据此前的开篇中的图，Root Meta Class 还是有根类的。)
+    如果还没找到则进入消息动态解析过程。
+~~~
 
 # 二、结构体、类、闭包
 
