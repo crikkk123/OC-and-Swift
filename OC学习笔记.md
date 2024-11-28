@@ -680,7 +680,7 @@ int main(int argc,const char* argv[]){
 ~~~
 
 ## 13、消息传递机制
-~~~text
+~~~objective-c
 如下用于描述 objc_msgSend 函数的调用流程：
 
     1.检测 SEL 是否应该被忽略
