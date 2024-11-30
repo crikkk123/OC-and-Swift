@@ -5,3 +5,5 @@
 
 消息相关函数：#import<objc/message.h>
 
+## 使用objc_msgSend函数
+强制转换：((void(*)(id,SEL,int))(void*)objc_msgSend)   把oc的方法转换成objc_msgSend函数执行
