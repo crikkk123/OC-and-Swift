@@ -163,3 +163,46 @@ int main(int argc, const char * argv[]) {
 <img width="1400" alt="image" src="https://github.com/user-attachments/assets/e32ab399-4c59-47e6-9ec6-8e944f72484a">
 
 ### 解决方法一：动态方法解析（dynamic method resolution）
+首先会调用+ resolveInstanceMethod:（对应实例方法）或+ resolveClassMethod:（对应类方法）方法，让你添加方法的实现。如果你添加方法并返回YES，那系统在运行时就会重新启动一次消息发送的过程。
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+
+
+@interface Person : NSObject
+
+- (void)run;
+
+@end
+
+@implementation Person
+
+- (void)run {
+    NSLog(@"跑");
+}
+
+//如果增加了方法并返回YES，就会重新发送消息并处理，返回NO，则进入下一步
++ (BOOL)resolveInstanceMethod:(SEL)sel{
+    if (sel == sel_registerName("wahaha")) {
+        class_addMethod(self, sel_registerName("wahaha"), imp_implementationWithBlock(^(){
+            NSLog(@"wahaha");
+        }), "v@:");
+    }
+    return YES;
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // 分配 Person 对象
+        Person *p = ((Person* (*)(id,SEL)) objc_msgSend)(objc_getClass("Person"), sel_registerName("alloc"));
+        p = ((Person* (*)(id,SEL)) objc_msgSend)(p, sel_registerName("init"));
+        ((void (*)(id, SEL, id))objc_msgSend)(p, sel_registerName("wahaha"), nil);
+    }
+    return 0;
+}
+
+~~~
