@@ -206,3 +206,4 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
+如果上面返回NO，则会进入完整的消息转发机制,这里又分为两个步骤：
