@@ -208,3 +208,63 @@ int main(int argc, const char * argv[]) {
 ~~~
 如果上面返回NO，则会进入完整的消息转发机制,这里又分为两个步骤：
 ## 快速消息转发
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+
+@interface Dog : NSObject
+
+@end
+
+@implementation Dog
+
+- (void)wahaha{
+    NSLog(@"wa");
+}
+
+@end
+
+@interface Person : NSObject
+
+- (void)run;
+
+@end
+
+@implementation Person
+
+- (void)run {
+    NSLog(@"跑");
+}
+
+//如果增加了方法并返回YES，就会重新发送消息并处理，返回NO，则进入下一步
+//+ (BOOL)resolveInstanceMethod:(SEL)sel{
+//    if (sel == sel_registerName("wahaha")) {
+//        class_addMethod(self, sel_registerName("wahaha"), imp_implementationWithBlock(^(){
+//            NSLog(@"wahaha");
+//        }), "v@:");
+//    }
+//    return YES;
+//}
+
+//返回一个对象继续处理消息
+- (id)forwardingTargetForSelector:(SEL)aSelector{
+    if (aSelector == sel_registerName("wahaha")) {
+        return [Dog new];
+    }
+    return nil;
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // 分配 Person 对象
+        Person *p = ((Person* (*)(id,SEL)) objc_msgSend)(objc_getClass("Person"), sel_registerName("alloc"));
+        p = ((Person* (*)(id,SEL)) objc_msgSend)(p, sel_registerName("init"));
+        ((void (*)(id, SEL, id))objc_msgSend)(p, sel_registerName("wahaha"), nil);
+    }
+    return 0;
+}
+
+~~~
