@@ -162,3 +162,4 @@ int main(int argc, const char * argv[]) {
 图片：
 <img width="1400" alt="image" src="https://github.com/user-attachments/assets/e32ab399-4c59-47e6-9ec6-8e944f72484a">
 
+### 解决方法一：动态方法解析（dynamic method resolution）
