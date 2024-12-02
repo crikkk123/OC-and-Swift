@@ -691,6 +691,11 @@ int main(int argc,const char* argv[]){
     如果还没找到则进入消息动态解析过程。
 ~~~
 
+## 14、将oc代码转换为cpp代码
+~~~text
+clang -rewrite-objc main.m -o main.cpp
+~~~
+
 # 二、结构体、类、闭包
 
 ## 1、#define
