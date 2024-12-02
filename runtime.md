@@ -127,3 +127,38 @@ int main(int argc, const char * argv[]) {
 ~~~
 
 ## OC的消息转发
+### 如果有一个没有实现的函数，程序崩掉
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+
+
+@interface Person : NSObject
+
+- (void)run;
+
+@end
+
+@implementation Person
+
+- (void)run {
+    NSLog(@"跑");
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // 分配 Person 对象
+        Person *p = ((Person* (*)(id,SEL)) objc_msgSend)(objc_getClass("Person"), sel_registerName("alloc"));
+        p = ((Person* (*)(id,SEL)) objc_msgSend)(p, sel_registerName("init"));
+        ((void (*)(id, SEL, id))objc_msgSend)(p, @selector(fly), nil);
+    }
+    return 0;
+}
+
+~~~
+图片：
+<img width="1400" alt="image" src="https://github.com/user-attachments/assets/e32ab399-4c59-47e6-9ec6-8e944f72484a">
+
