@@ -30,3 +30,34 @@ int main(int argc, const char * argv[]) {
 
 ## malloc_size()
 该函数的参数是一个指针，可以计算所传入指针 `所指向内存空间的大小`
+
+## objc_msgSend
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+
+
+@interface Person : NSObject
+
+- (void)run;
+
+@end
+
+@implementation Person
+
+- (void)run {
+    NSLog(@"跑");
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        ((void (*)(id, SEL, id))objc_msgSend)(p, @selector(run), nil);
+    }
+    return 0;
+}
+
+~~~
