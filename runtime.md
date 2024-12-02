@@ -268,3 +268,7 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
+## 普通消息转发
+~~~objective-c
+
+~~~
