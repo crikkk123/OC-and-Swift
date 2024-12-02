@@ -93,3 +93,35 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+
+
+@interface Person : NSObject
+
+- (void)run;
+
+@end
+
+@implementation Person
+
+- (void)run {
+    NSLog(@"跑");
+}
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // 分配 Person 对象
+        Person *p = ((Person* (*)(id,SEL)) objc_msgSend)(objc_getClass("Person"), sel_registerName("alloc"));
+        p = ((Person* (*)(id,SEL)) objc_msgSend)(p, sel_registerName("init"));
+        ((void (*)(id, SEL, id))objc_msgSend)(p, @selector(run), nil);
+    }
+    return 0;
+}
+
+~~~
