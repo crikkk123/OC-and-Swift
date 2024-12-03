@@ -31,6 +31,28 @@ int main(int argc, const char * argv[]) {
 ## malloc_size()
 该函数的参数是一个指针，可以计算所传入指针 `所指向内存空间的大小`
 
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+#import <malloc/malloc.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSObject *obj = [[NSObject alloc] init];
+        size_t size = class_getInstanceSize([NSObject class]);
+        NSLog(@"NSObject实例对象的大小：%zd",size);
+        size_t size2 = malloc_size((__bridge const void *)(obj));
+        NSLog(@"对象obj所指向的的内存空间大小：%zd",size2);
+    }
+    return 0;
+}
+
+~~~
+
+图片：
+<img width="337" alt="image" src="https://github.com/user-attachments/assets/3229e963-a19e-45ae-b092-6b5bba11991c">
+
+
 ## objc_msgSend
 ~~~objective-c
 #import <Foundation/Foundation.h>
