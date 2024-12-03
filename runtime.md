@@ -23,12 +23,12 @@ int main(int argc, const char * argv[]) {
 }
 ~~~
 
-### 输出
+输出
 <img width="315" alt="image" src="https://github.com/user-attachments/assets/4d7cba5c-9491-47fc-a2e4-2ba6485f9d40">
 
 
 
-## malloc_size()
+malloc_size()
 该函数的参数是一个指针，可以计算所传入指针 `所指向内存空间的大小`
 
 ~~~objective-c
@@ -67,8 +67,63 @@ alignedInstanceSize 的实现
     uint32_t alignedInstanceSize() const {
         return word_align(unalignedInstanceSize());
     }
+其内部只有一个isa指针在64bit下占8字节
 ~~~
 
+alloc：
+~~~objective-c
+id
+_objc_rootAllocWithZone(Class cls, objc_zone_t)
+{
+    // allocWithZone under __OBJC2__ ignores the zone parameter
+    return _class_createInstance(cls, 0, OBJECT_CONSTRUCT_CALL_BADALLOC);
+}
+~~~
+
+_class_createInstance 实现：
+~~~objective-c
+static ALWAYS_INLINE id
+_class_createInstance(Class cls, size_t extraBytes,
+                      int construct_flags = OBJECT_CONSTRUCT_NONE,
+                      bool cxxConstruct = true,
+                      size_t *outAllocatedSize = nil)
+{
+    ASSERT(cls->isRealized());
+
+    // Read class's info bits all at once for performance
+    bool hasCxxCtor = cxxConstruct && cls->hasCxxCtor();
+    bool hasCxxDtor = cls->hasCxxDtor();
+    bool fast = cls->canAllocNonpointer();
+    size_t size;
+
+    size = cls->instanceSize(extraBytes);
+    if (outAllocatedSize) *outAllocatedSize = size;
+
+    id obj = objc::malloc_instance(size, cls);
+    if (slowpath(!obj)) {
+        if (construct_flags & OBJECT_CONSTRUCT_CALL_BADALLOC) {
+            return _objc_callBadAllocHandler(cls);
+        }
+        return nil;
+    }
+
+    if (fast) {
+        obj->initInstanceIsa(cls, hasCxxDtor);
+    } else {
+        // Use raw pointer isa on the assumption that they might be
+        // doing something weird with the zone or RR.
+        obj->initIsa(cls);
+    }
+
+    if (fastpath(!hasCxxCtor)) {
+        return obj;
+    }
+
+    construct_flags |= OBJECT_CONSTRUCT_FREE_ONFAILURE;
+    return object_cxxConstructFromClass(obj, cls, construct_flags);
+}
+
+~~~
 
 
 ## objc_msgSend
