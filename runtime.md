@@ -61,6 +61,14 @@ size_t class_getInstanceSize(Class cls)
 }
 ~~~
 
+alignedInstanceSize 的实现
+~~~objective-c
+    // Class's ivar size rounded up to a pointer-size boundary.
+    uint32_t alignedInstanceSize() const {
+        return word_align(unalignedInstanceSize());
+    }
+~~~
+
 
 
 ## objc_msgSend
