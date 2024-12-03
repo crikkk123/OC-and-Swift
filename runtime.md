@@ -125,6 +125,18 @@ _class_createInstance(Class cls, size_t extraBytes,
 
 ~~~
 
+~~~objective-c
+    inline size_t instanceSize(size_t extraBytes) const {
+        if (fastpath(cache.hasFastInstanceSize(extraBytes))) {
+            return cache.fastInstanceSize(extraBytes);
+        }
+
+        size_t size = alignedInstanceSize() + extraBytes;
+        // CF requires all objects be at least 16 bytes.
+        if (size < 16) size = 16;
+        return size;
+    }
+~~~
 
 ## objc_msgSend
 ~~~objective-c
