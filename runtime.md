@@ -52,6 +52,16 @@ int main(int argc, const char * argv[]) {
 图片：
 <img width="337" alt="image" src="https://github.com/user-attachments/assets/3229e963-a19e-45ae-b092-6b5bba11991c">
 
+class_getInstanceSize 的实现：
+~~~objective-c
+size_t class_getInstanceSize(Class cls)
+{
+    if (!cls) return 0;
+    return cls->alignedInstanceSize();
+}
+~~~
+
+
 
 ## objc_msgSend
 ~~~objective-c
