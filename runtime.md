@@ -125,6 +125,7 @@ _class_createInstance(Class cls, size_t extraBytes,
 
 ~~~
 
+instanceSize 实现：
 ~~~objective-c
     inline size_t instanceSize(size_t extraBytes) const {
         if (fastpath(cache.hasFastInstanceSize(extraBytes))) {
@@ -137,6 +138,8 @@ _class_createInstance(Class cls, size_t extraBytes,
         return size;
     }
 ~~~
+
+
 
 ## objc_msgSend
 ~~~objective-c
