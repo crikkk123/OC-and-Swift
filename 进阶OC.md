@@ -10,7 +10,9 @@
 
 ## 三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
+
 class     类对象    ：  isa指针、superclass指针、类的属性信息、类的方法信息、类的协议信息、类的成员变量信息
+
 meta-class  元对象  ：  isa指针、superclass指针、类的方法信息
 
 ## OC代码转换为CPP代码的命令
