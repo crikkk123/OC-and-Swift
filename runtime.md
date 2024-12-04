@@ -1,4 +1,4 @@
-# Runtime
+# OC
 
 ## runtime库函数
 头文件：类相关函数#import<objc/runtime.h>
@@ -7,6 +7,11 @@
 
 ## 使用objc_msgSend函数
 强制转换：((void(*)(id,SEL,int))(void*)objc_msgSend)   把oc的方法转换成objc_msgSend函数执行
+
+## OC代码转换为CPP代码的命令
+~~~text
+xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
+~~~
 
 ## class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
