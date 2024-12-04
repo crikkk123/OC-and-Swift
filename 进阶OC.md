@@ -321,8 +321,8 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
-如果上面返回NO，则会进入完整的消息转发机制,这里又分为两个步骤：
-## 快速消息转发
+### 如果上面返回NO，则会进入完整的消息转发机制,这里又分为两个步骤：
+#### 快速消息转发
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -383,7 +383,7 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
-## 普通消息转发
+#### 普通消息转发
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
