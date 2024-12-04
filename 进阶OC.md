@@ -49,6 +49,34 @@ Class object_getClass(id obj)
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
 
+## 验证
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+
+@interface CLPerson : NSObject <NSCopying>
+
+@end
+
+@implementation CLPerson
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        CLPerson *person = [[CLPerson alloc] init];
+        Class personClass = [CLPerson class];
+        Class personMetaClass = object_getClass(personClass);
+        NSLog(@"%p %p %p", person, personClass, personMetaClass);
+    }
+    return 0;
+}
+
+~~~
+
+<img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
+
+
 ## class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
