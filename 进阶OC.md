@@ -549,7 +549,9 @@ Method class_getInstanceMethod(Class cls, SEL sel)
 ~~~
 
 
+
 using mutex_locker_t = mutex_t::locker;
+extern ExplicitInitLock<mutex_t> runtimeLock;
 ~~~objective-c
 static Method _class_getMethod(Class cls, SEL sel)
 {
@@ -557,3 +559,4 @@ static Method _class_getMethod(Class cls, SEL sel)
     return _method_sign(getMethod_nolock(cls, sel));
 }
 ~~~
+
