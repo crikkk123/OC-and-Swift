@@ -561,6 +561,27 @@ static Method _class_getMethod(Class cls, SEL sel)
 }
 ~~~
 
+~~~obejctive-c
+static method_t *
+getMethod_nolock(Class cls, SEL sel)
+{
+    method_t *m = nil;
+
+    lockdebug::assert_locked(&runtimeLock.get());
+
+    // fixme nil cls?
+    // fixme nil sel?
+
+    ASSERT(cls->isRealized());
+
+    while (cls  &&  ((m = getMethodNoSuper_nolock(cls, sel))) == nil) {
+        cls = cls->getSuperclass();
+    }
+
+    return m;
+}
+~~~
+
 ~~~objective-c
 static inline Method _method_sign(struct method_t *m) {
     if (!m)
