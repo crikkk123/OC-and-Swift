@@ -31,6 +31,7 @@ Class objc_getClass(const char *aClassName)：
     因为我们通过字符串，只能定义类的名字，所以这个方法只能返回class对象
 
 Class object_getClass(id obj)
+
     入参obj可以是instance对象、class对象或者meta-class对象
     
     返回值：
