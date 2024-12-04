@@ -667,3 +667,32 @@ isKnownClass(Class cls)
     return set.find(cls) != set.end() || dataSegmentsContain(cls);
 }
 ~~~
+
+
+~~~objective-c
+static IMP
+_method_setImplementation(Class cls, method_t *m, IMP imp)
+{
+    lockdebug::assert_locked(&runtimeLock.get());
+
+    if (!m) return nil;
+    if (!imp) return nil;
+
+    IMP old = m->imp(false);
+    SEL sel = m->name();
+
+    m->setImp(imp);
+
+    // Cache updates are slow if cls is nil (i.e. unknown)
+    // RR/AWZ updates are slow if cls is nil (i.e. unknown)
+    // fixme build list of classes whose Methods are known externally?
+
+    flushCaches(cls, __func__, [sel, old](Class c){
+        return c->cache.shouldFlush(sel, old);
+    });
+
+    adjustCustomFlagsForMethodChange(cls, m);
+
+    return old;
+}
+~~~
