@@ -525,3 +525,35 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
+
+## Method class_getInstanceMethod(Class cls, SEL sel)
+~~~objective-c
+Method class_getInstanceMethod(Class cls, SEL sel)
+{
+    if (!cls  ||  !sel) return nil;
+
+    // This deliberately avoids +initialize because it historically did so.
+
+    // This implementation is a bit weird because it's the only place that
+    // wants a Method instead of an IMP.
+
+#warning fixme build and search caches
+
+    // Search method lists, try method resolver, etc.
+    lookUpImpOrForward(nil, sel, cls, LOOKUP_RESOLVER);
+
+#warning fixme build and search caches
+
+    return _class_getMethod(cls, sel);
+}
+~~~
+
+~~~objective-c
+using mutex_locker_t = mutex_t::locker;
+
+static Method _class_getMethod(Class cls, SEL sel)
+{
+    mutex_locker_t lock(runtimeLock);
+    return _method_sign(getMethod_nolock(cls, sel));
+}
+~~~
