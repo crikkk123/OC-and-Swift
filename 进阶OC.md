@@ -644,3 +644,26 @@ addMethod(Class cls, SEL name, IMP imp, const char *types, bool replace)
     return result;
 }
 ~~~
+
+
+~~~objective-c
+static void
+checkIsKnownClass(Class cls)
+{
+    if (slowpath(!isKnownClass(cls))) {
+        _objc_fatal("Attempt to use unknown class %p.", cls);
+    }
+}
+~~~
+
+~~~objective-c
+static bool
+isKnownClass(Class cls)
+{
+    if (fastpath(cls->isRealized() && objc::dataSegmentsRanges.contains(cls->data()->witness, (uintptr_t)cls))) {
+        return true;
+    }
+    auto &set = objc::allocatedClasses.get();
+    return set.find(cls) != set.end() || dataSegmentsContain(cls);
+}
+~~~
