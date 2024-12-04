@@ -561,3 +561,10 @@ static Method _class_getMethod(Class cls, SEL sel)
 }
 ~~~
 
+~~~objective-c
+static inline Method _method_sign(struct method_t *m) {
+    if (!m)
+        return NULL;
+    return (Method)ptrauth_sign_unauthenticated(m, ptrauth_key_process_dependent_data, METHOD_SIGNING_DISCRIMINATOR);
+}
+~~~
