@@ -548,7 +548,6 @@ Method class_getInstanceMethod(Class cls, SEL sel)
 }
 ~~~
 
-----
 
 
 using mutex_locker_t = mutex_t::locker;
