@@ -548,9 +548,9 @@ Method class_getInstanceMethod(Class cls, SEL sel)
 }
 ~~~
 
-~~~objective-c
-using mutex_locker_t = mutex_t::locker;
 
+using mutex_locker_t = mutex_t::locker;
+~~~objective-c
 static Method _class_getMethod(Class cls, SEL sel)
 {
     mutex_locker_t lock(runtimeLock);
