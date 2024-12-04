@@ -8,6 +8,11 @@
 ## 使用objc_msgSend函数
 强制转换：((void(*)(id,SEL,int))(void*)objc_msgSend)   把oc的方法转换成objc_msgSend函数执行
 
+## 三种OC对象
+instance  实例对象  ：  isa指针、其他成员变量
+class     类对象    ：  isa指针、superclass指针、类的属性信息、类的方法信息、类的协议信息、类的成员变量信息
+meta-class  元对象  ：  isa指针、superclass指针、类的方法信息
+
 ## OC代码转换为CPP代码的命令
 ~~~text
 xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
