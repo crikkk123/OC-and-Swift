@@ -20,6 +20,22 @@ meta-class  元对象  ：  isa指针、superclass指针、类的方法信息
 xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
 ~~~
 
+
+## Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
+Class objc_getClass(const char *aClassName)：
+    入参是一个字符串，也就是类名
+    返回值是对应的class对象
+    因为我们通过字符串，只能定义类的名字，所以这个方法只能返回class对象
+
+Class object_getClass(id obj)
+    入参obj可以是instance对象、class对象或者meta-class对象
+    
+    返回值：
+        传入instance对象，返回对应的class对象
+        传入class对象，返回对应的meta-class对象
+        传入meta-class对象，返回NSObject(基类)的meta-class对象
+
+
 ## class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
