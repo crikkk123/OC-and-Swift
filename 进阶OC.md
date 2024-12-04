@@ -137,7 +137,7 @@ _class_createInstance(Class cls, size_t extraBytes,
 
 ~~~
 
-instanceSize 实现：
+instanceSize 实现：有一个buck的宏定义：16、32、48、64、80 ...
 ~~~objective-c
     inline size_t instanceSize(size_t extraBytes) const {
         if (fastpath(cache.hasFastInstanceSize(extraBytes))) {
