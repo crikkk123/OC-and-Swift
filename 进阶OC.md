@@ -589,3 +589,58 @@ static inline Method _method_sign(struct method_t *m) {
     return (Method)ptrauth_sign_unauthenticated(m, ptrauth_key_process_dependent_data, METHOD_SIGNING_DISCRIMINATOR);
 }
 ~~~
+
+
+## IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
+~~~objective-c
+IMP
+class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
+{
+    if (!cls) return nil;
+
+    mutex_locker_t lock(runtimeLock);
+    return addMethod(cls, name, imp, types ?: "", YES);
+}
+~~~
+
+~~~objective-c
+static IMP
+addMethod(Class cls, SEL name, IMP imp, const char *types, bool replace)
+{
+    IMP result = nil;
+
+    lockdebug::assert_locked(&runtimeLock.get());
+
+    checkIsKnownClass(cls);
+
+    ASSERT(types);
+    ASSERT(cls->isRealized());
+
+    method_t *m;
+    if ((m = getMethodNoSuper_nolock(cls, name))) {
+        // already exists
+        if (!replace) {
+            result = m->imp(false);
+        } else {
+            result = _method_setImplementation(cls, m, imp);
+        }
+    } else {
+        // fixme optimize
+        method_list_t *newlist = method_list_t::allocateMethodList(1, fixed_up_method_list);
+
+#if TARGET_OS_EXCLAVEKIT
+        auto &first = newlist->begin()->bigStripped();
+#else
+        auto &first = newlist->begin()->bigSigned();
+#endif
+        first.name = name;
+        first.types = strdupIfMutable(types);
+        first.imp = imp;
+
+        addMethods_finish(cls, newlist);
+        result = nil;
+    }
+
+    return result;
+}
+~~~
