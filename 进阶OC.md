@@ -76,12 +76,6 @@ int main(int argc, const char * argv[]) {
 
 <img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
 
-## instance、supclass、meta-class指针指向
-~~~objective-c
-
-~~~
-
-
 
 ## class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
@@ -701,4 +695,13 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 
     return old;
 }
+~~~
+
+
+
+
+# runtime
+## Apple对isa的优化
+~~~objective-c
+
 ~~~
