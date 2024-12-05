@@ -703,5 +703,27 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 # runtime
 ## Apple对isa的优化
 ~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+
+@interface CLPerson : NSObject <NSCopying>
+
+@end
+
+@implementation CLPerson
+
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        CLPerson *person = [[CLPerson alloc] init];
+        Class personClass = [CLPerson class];
+        Class personMetaClass = object_getClass(personClass);
+        NSLog(@"%p %p %p", person, personClass, personMetaClass);
+    }
+    return 0;
+}
+
+<img width="482" alt="image" src="https://github.com/user-attachments/assets/430f5b81-486d-4f59-8045-3e08a4ba1e0c">
 
 ~~~
