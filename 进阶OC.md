@@ -19,7 +19,7 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 
 ![image](https://github.com/user-attachments/assets/de564eb6-0091-4336-be17-b81676b45006)
 
-
+沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
 
 ## OC代码转换为CPP代码的命令
 ~~~text
