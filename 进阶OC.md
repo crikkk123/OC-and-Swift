@@ -13,9 +13,12 @@
 ## 三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
-class     类对象    ：  isa指针、superclass指针、类的属性信息、类的方法信息、类的协议信息、类的成员变量信息
+class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
 
-meta-class  元对象  ：  isa指针、superclass指针、类的方法信息
+meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+方法）
+
+![image](https://github.com/user-attachments/assets/de564eb6-0091-4336-be17-b81676b45006)
+
 
 
 ## OC代码转换为CPP代码的命令
