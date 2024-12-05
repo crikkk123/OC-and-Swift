@@ -1,16 +1,16 @@
 # OC进阶
 
-## runtime库函数
+## 1、runtime库函数
 头文件：类相关函数#import<objc/runtime.h>
 
 消息相关函数：#import<objc/message.h>
 
 
-## 使用objc_msgSend函数
+## 2、使用objc_msgSend函数
 强制转换：((void(*)(id,SEL,int))(void*)objc_msgSend)   把oc的方法转换成objc_msgSend函数执行
 
 
-## 三种OC对象
+## 3、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
 class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
@@ -21,13 +21,13 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 
 沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
 
-## OC代码转换为CPP代码的命令
+## 4、OC代码转换为CPP代码的命令
 ~~~text
 xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
 ~~~
 
 
-## Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
+## 5、Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
 Class objc_getClass(const char *aClassName)：
 
     入参是一个字符串，也就是类名
@@ -48,11 +48,11 @@ Class object_getClass(id obj)
         传入meta-class对象，返回NSObject(基类)的meta-class对象
 
 
-## instance、class、meta-class（isa、superclass）总结
+## 6、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
 
-## 验证
+### 验证
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -80,7 +80,7 @@ int main(int argc, const char * argv[]) {
 <img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
 
 
-## class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
+## 7、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -213,7 +213,7 @@ instanceSize 实现：有一个buck的宏定义：16、32、48、64、80 ...
 
 
 
-## objc_msgSend
+## 8、objc_msgSend
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -308,7 +308,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## OC的消息转发
+## 9、OC的消息转发
 ### 如果有一个没有实现的函数，程序崩掉
 ~~~objective-c
 #import <Foundation/Foundation.h>
@@ -529,7 +529,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## Method class_getInstanceMethod(Class cls, SEL sel)
+## 10、Method class_getInstanceMethod(Class cls, SEL sel)
 ~~~objective-c
 Method class_getInstanceMethod(Class cls, SEL sel)
 {
@@ -594,7 +594,7 @@ static inline Method _method_sign(struct method_t *m) {
 ~~~
 
 
-## IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
+## 11、IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
 ~~~objective-c
 IMP
 class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
@@ -704,7 +704,7 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 
 
 # runtime
-## Apple对isa的优化
+## 1、Apple对isa的优化
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
