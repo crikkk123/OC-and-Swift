@@ -79,6 +79,8 @@ int main(int argc, const char * argv[]) {
 
 <img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
 
+
+苹果从ARM64位架构开始，对isa进行了优化，将其定义成一个共用体（union）结构，结合  位域 的概念以及  位运算  的方式来存储更多类相关信息。isa指针需要通过与一个叫ISA_MASK的值（掩码）进行二进制&运算，才能得到真实的class/meta-class对象的地址
 ISA_MASK部分源码:
 ~~~objective-c
 # if __arm64__
