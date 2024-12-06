@@ -847,7 +847,7 @@ key-value observe
 
 <img width="673" alt="image" src="https://github.com/user-attachments/assets/79aa3b5c-4bc7-44b7-94dd-23d34522ed0f">
 
-根据下面的图片可以看出，p1的isa指针和p2的isa指针指向的class类不同（！！！后面会补具体的p1->isa类型）
+根据下面的图片可以看出，p1的isa指针和p2的isa指针指向的class类不同（！！！后面会补具体的p1->isa类型：自己写其struct类型进行强转）
 
 <img width="313" alt="image" src="https://github.com/user-attachments/assets/ae1af168-9f0f-444c-8d00-bd8f8dede7d0">
 
