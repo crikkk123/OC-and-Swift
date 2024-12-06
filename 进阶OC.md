@@ -809,10 +809,13 @@ key-value observe
 #import "ViewController.h"
 
 @interface ViewController ()
-
+@property(strong) TempPerson* p1;
+@property(strong) TempPerson* p2;
 @end
 
 @implementation TempPerson
+
+
 
 @end
 
@@ -820,16 +823,16 @@ key-value observe
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    TempPerson* p1 = [[TempPerson alloc] init];
-    p1.age = 10;
-    TempPerson* p2 = [[TempPerson alloc] init];
-    p2.age = 100;
+    self.p1 = [[TempPerson alloc] init];
+    self.p1.age = 10;
+    self.p2 = [[TempPerson alloc] init];
+    self.p2.age = 100;
     
     NSKeyValueObservingOptions oper = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
-    [p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
+    [self.p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
     
-    p1.age = 20;
-    p2.age = 200;
+    self.p1.age = 20;
+    self.p2.age = 200;
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
