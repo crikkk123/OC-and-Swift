@@ -806,7 +806,44 @@ key-value observe
 
 ~~~objective-c
 
+#import "ViewController.h"
+
+@interface ViewController ()
+
+@end
+
+@implementation TempPerson
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    TempPerson* p1 = [[TempPerson alloc] init];
+    p1.age = 10;
+    TempPerson* p2 = [[TempPerson alloc] init];
+    p2.age = 100;
+    
+    NSKeyValueObservingOptions oper = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
+    [p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
+    
+    p1.age = 20;
+    p2.age = 200;
+}
+
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    NSLog(@"%@ 的 %@ %@ -> %@",object,keyPath,change[@"old"],change[@"new"]);
+    NSLog(@"11");
+}
+
+@end
+
 ~~~
+图片：
+<img width="673" alt="image" src="https://github.com/user-attachments/assets/79aa3b5c-4bc7-44b7-94dd-23d34522ed0f">
+
+
 
 # runtime
 ## 1、Apple对isa的优化
