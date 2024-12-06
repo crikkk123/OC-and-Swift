@@ -801,7 +801,12 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 ~~~
 
 
+## 12、KVO
+key-value observe
 
+~~~objective-c
+
+~~~
 
 # runtime
 ## 1、Apple对isa的优化
