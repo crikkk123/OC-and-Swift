@@ -51,6 +51,7 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 ## 6、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
+
 验证
 ~~~objective-c
 #import <Foundation/Foundation.h>
@@ -77,6 +78,9 @@ int main(int argc, const char * argv[]) {
 ~~~
 
 <img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
+
+这里利用struct看出实例对象的isa指针指向类对象
+![image](https://github.com/user-attachments/assets/4195c1d1-f3cd-43db-bd3b-e5f24e5ec8c9)
 
 
 苹果从ARM64位架构开始，对isa进行了优化，将其定义成一个共用体（union）结构，结合  位域 的概念以及  位运算  的方式来存储更多类相关信息。isa指针需要通过与一个叫ISA_MASK的值（掩码）进行二进制&运算，才能得到真实的class/meta-class对象的地址
