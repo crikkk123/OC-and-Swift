@@ -16,19 +16,7 @@ xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP�
 ~~~
 
 
-## 4、三种OC对象
-instance  实例对象  ：  isa指针、其他成员变量
-
-class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
-
-meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+方法）
-
-![image](https://github.com/user-attachments/assets/de564eb6-0091-4336-be17-b81676b45006)
-
-沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
-
-
-## 5、Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
+## 4、Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
 Class objc_getClass(const char *aClassName)：
 
     入参是一个字符串，也就是类名
@@ -48,6 +36,17 @@ Class object_getClass(id obj)
         
         传入meta-class对象，返回NSObject(基类)的meta-class对象
 
+
+## 5、三种OC对象
+instance  实例对象  ：  isa指针、其他成员变量
+
+class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
+
+meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+方法）
+
+![image](https://github.com/user-attachments/assets/de564eb6-0091-4336-be17-b81676b45006)
+
+沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
 
 ## 6、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
