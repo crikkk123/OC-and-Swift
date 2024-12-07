@@ -178,11 +178,7 @@ ISA_MASK部分源码:
 ~~~
 
 
-
-
-
-
-## 8、objc_msgSend
+## 7、objc_msgSend
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -277,7 +273,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 9、OC的消息转发
+## 8、OC的消息转发
 ### 如果有一个没有实现的函数，程序崩掉
 ~~~objective-c
 #import <Foundation/Foundation.h>
@@ -498,7 +494,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 7、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
+## 9、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
