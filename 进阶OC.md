@@ -52,7 +52,7 @@ Class object_getClass(id obj)
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
 
-### 验证
+验证
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
