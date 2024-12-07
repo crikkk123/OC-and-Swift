@@ -10,7 +10,13 @@
 强制转换：((void(*)(id,SEL,int))(void*)objc_msgSend)   把oc的方法转换成objc_msgSend函数执行
 
 
-## 3、三种OC对象
+## 3、OC代码转换为CPP代码的命令
+~~~text
+xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
+~~~
+
+
+## 4、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
 class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
@@ -20,11 +26,6 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 ![image](https://github.com/user-attachments/assets/de564eb6-0091-4336-be17-b81676b45006)
 
 沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
-
-## 4、OC代码转换为CPP代码的命令
-~~~text
-xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
-~~~
 
 
 ## 5、Class objc_getClass(const char *aClassName) 与 Class object_getClass(id obj)
@@ -50,7 +51,6 @@ Class object_getClass(id obj)
 
 ## 6、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
-
 
 验证
 ~~~objective-c
@@ -177,7 +177,6 @@ ISA_MASK部分源码:
 // SUPPORT_PACKED_ISA
 #endif
 ~~~
-
 
 
 ## 7、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
