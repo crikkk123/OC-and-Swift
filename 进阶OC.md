@@ -82,9 +82,7 @@ int main(int argc, const char * argv[]) {
 这里利用struct看出实例对象的isa指针指向类对象
 ![99bc938e77b281c69db0455fd9144c51](https://github.com/user-attachments/assets/afcf5e47-c8d2-4646-a3a1-fae0b3293fd4)
 
-
-
-
+在runtime对isa有详细解释
 
 
 ## 7、objc_msgSend
