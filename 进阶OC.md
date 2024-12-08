@@ -940,6 +940,8 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 ~~~objective-c
 解决方法1：利用全局变量存储，但是这样的话多创建几个对象，使用的是一个全局变量
 
+存在的问题：1、内存泄漏  2、线程安全   3、代码冗余
+
 @implementation Person (Test)
 
 int weight_;
