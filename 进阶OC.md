@@ -57,6 +57,7 @@ struct NSObject_IMPL {
 };
 
 typedef struct objc_class *Class;
+
 struct objc_object {
     Class _Nonnull isa __attribute__((deprecated));
 };
