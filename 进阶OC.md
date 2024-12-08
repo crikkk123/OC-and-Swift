@@ -36,7 +36,7 @@ Class object_getClass(id obj)
         
         传入meta-class对象，返回NSObject(基类)的meta-class对象
 
-## 5、NSObject转成cpp代码
+## 5、isa
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -51,7 +51,7 @@ int main(int argc, const char * argv[]) {
 ~~~
 
 代码：
-
+~~~objective-c
 struct NSObject_IMPL {
 	Class isa;
 };
@@ -61,8 +61,42 @@ typedef struct objc_class *Class;
 struct objc_object {
     Class _Nonnull isa __attribute__((deprecated));
 };
+~~~
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
+
+@interface Student : NSObject
+
+@property(nonatomic,assign) int age;
+@property(nonatomic,assign) int weight;
+
+@end
+
+@implementation Student
 
 
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Student* abd = [[Student alloc] init];
+    }
+    return 0;
+}
+~~~
+~~~objective-c
+struct Student_IMPL {
+	struct NSObject_IMPL NSObject_IVARS;
+	int _age;
+	int _weight;
+};
+
+struct NSObject_IMPL {
+	Class isa;
+};
+~~~
 
 ## 6、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
