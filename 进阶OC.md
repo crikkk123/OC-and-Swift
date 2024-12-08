@@ -980,7 +980,80 @@ NSMutableDictionary *weights_;
 ~~~
 ![image](https://github.com/user-attachments/assets/de6c1528-48a9-411d-8752-bee4cb918988)
 
+~~~objective-c
 
+objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
+                         id _Nullable value, objc_AssociationPolicy policy)
+
+枚举值：
+typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies an unsafe unretained reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+                                            *   The association is made atomically. */
+    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+                                            *   The association is made atomically. */
+};
+
+
+NameKey没赋值相当于空值，这样的话只有一个属性是可以的，但是再添加一个属性就有问题了
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+const void *NameKey;     
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+@end
+
+---------------------------------------------------------------
+@interface Person (Test)
+
+@property(nonatomic,assign) NSString* name;
+@property(nonatomic,assign) int weight;
+
+@end
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+const void *NameKey = &NameKey;
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+const void *WeightKey = &WeightKey;
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,WeightKey,@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, WeightKey) intValue];
+}
+
+@end
+
+
+~~~
 
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
