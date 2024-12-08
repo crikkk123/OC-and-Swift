@@ -906,6 +906,18 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 -(int) age;
 @end
 
+@implementation Person
+
+-(void) setAge:(int) age{
+    _age = age;
+}
+
+-(int) age{
+    return _age;
+}
+
+@end
+
 ~~~
 
 
