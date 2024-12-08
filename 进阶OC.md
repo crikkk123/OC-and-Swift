@@ -890,6 +890,12 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 
 ## +initialize方法
 
+## 关联对象
+~~~objective-c
+@interface Person ： NSObject
+@property(nonatomic,assign) int age;
+@end
+~~~
 
 
 # Block
