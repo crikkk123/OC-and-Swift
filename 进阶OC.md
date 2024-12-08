@@ -1034,7 +1034,7 @@ const void *NameKey;
 
 @implementation Person (Test)
 
-const void *NameKey = &NameKey;
+static const void *NameKey = &NameKey;
 
 - (void) setName:(NSString *)name{
     objc_setAssociatedObject(self,NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
@@ -1044,7 +1044,7 @@ const void *NameKey = &NameKey;
     return objc_getAssociatedObject(self, NameKey);
 }
 
-const void *WeightKey = &WeightKey;
+static const void *WeightKey = &WeightKey;
 - (void) setWeight:(int)weight{
     objc_setAssociatedObject(self,WeightKey,@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
