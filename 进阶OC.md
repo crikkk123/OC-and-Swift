@@ -107,7 +107,8 @@ int main(int argc, const char * argv[]) {
 <img width="415" alt="image" src="https://github.com/user-attachments/assets/3c779ee9-d5f1-4a43-8f3e-eda45a541f3d">
 
 这里利用struct看出实例对象的isa指针指向类对象
-![99bc938e77b281c69db0455fd9144c51](https://github.com/user-attachments/assets/afcf5e47-c8d2-4646-a3a1-fae0b3293fd4)
+![a729aec05c2e1e0dc8b1e3731001d1ef](https://github.com/user-attachments/assets/7cabf501-a18b-4ad8-9112-fc261cac2930)
+
 
 详细解释：runtime对isa的优化
 
