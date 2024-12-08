@@ -98,6 +98,57 @@ struct NSObject_IMPL {
 };
 ~~~
 
+## 6、objc_class
+~~~objective-c
+源码较多，选取部分
+
+struct objc_class : objc_object {
+  objc_class(const objc_class&) = delete;
+  objc_class(objc_class&&) = delete;
+  void operator=(const objc_class&) = delete;
+  void operator=(objc_class&&) = delete;
+    // Class ISA;
+    Class superclass;
+    cache_t cache;             // formerly cache pointer and vtable
+    class_data_bits_t bits;    // class_rw_t * plus custom rr/alloc flags
+
+~~~
+
+objc_class & FAST_DATA_MASK
+~~~
+直接拿取大神的
+
+struct class_rw_t {
+    uint32_t flags;
+    uint32_t version;
+    const class_ro_t *ro;
+    method_list_t *methods;       // 方法列表
+    property_list_t *properties;   // 属性列表
+    const protocol_list_t *protocols;   // 协议列表
+    Class firstSubclass;
+    Class nextSiblingClass;
+    char *demangledName;
+}
+
+~~~
+
+~~~objective-c
+struct class_ro_t {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+#ifdef __LP64__
+    uint32_t reserved;
+#endif
+    const uint8_t * ivarLayout;
+    const char *name;   // 类名
+    method_list_t *baseMethodList;
+    protocol_list_t *ivars;   // 成员变量列表
+    const ivar_list_t * ivars;
+    const uint8_t * weakIvarLayout;
+    property_list_t *baseProperties;
+~~~
+
 ## 6、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
