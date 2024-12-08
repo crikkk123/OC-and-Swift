@@ -149,7 +149,10 @@ struct class_ro_t {
     property_list_t *baseProperties;
 ~~~
 
-## 6、三种OC对象
+![image](https://github.com/user-attachments/assets/4c96f669-6322-4aeb-9567-22007b176bdf)
+
+
+## 7、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
 class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
@@ -160,7 +163,7 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 
 沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
 
-## 7、instance、class、meta-class（isa、superclass）总结
+## 8、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
 
@@ -198,7 +201,7 @@ int main(int argc, const char * argv[]) {
 详细解释：runtime对isa的优化
 
 
-## 8、objc_msgSend
+## 9、objc_msgSend
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -293,7 +296,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 9、OC的消息转发
+## 10、OC的消息转发
 ### 如果有一个没有实现的函数，程序崩掉
 ~~~objective-c
 #import <Foundation/Foundation.h>
@@ -514,7 +517,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 10、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
+## 11、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -646,7 +649,7 @@ instanceSize 实现：有一个buck的宏定义：16、32、48、64、80 ...
 ~~~
 
 
-## 11、Method class_getInstanceMethod(Class cls, SEL sel)
+## 12、Method class_getInstanceMethod(Class cls, SEL sel)
 ~~~objective-c
 Method class_getInstanceMethod(Class cls, SEL sel)
 {
@@ -711,7 +714,7 @@ static inline Method _method_sign(struct method_t *m) {
 ~~~
 
 
-## 12、IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
+## 13、IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
 ~~~objective-c
 IMP
 class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
