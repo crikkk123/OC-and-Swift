@@ -1055,6 +1055,35 @@ static const void *WeightKey = &WeightKey;
 
 @end
 
+---------------------------------------------------------------------------------------------------
+static const char方案：
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+static const char NameKey;
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,&NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+static const char WeightKey;
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,&WeightKey,@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, &WeightKey) intValue];
+}
+
+@end
+
 
 ~~~
 
