@@ -976,7 +976,8 @@ NSMutableDictionary *weights_;
 
 @end
 ~~~
-![image](https://github.com/user-attachments/assets/6bf6e285-0cd3-4e57-823a-9b1283263417)
+![image](https://github.com/user-attachments/assets/de6c1528-48a9-411d-8752-bee4cb918988)
+
 
 
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
