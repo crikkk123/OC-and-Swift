@@ -1,4 +1,4 @@
-# OC进阶
+![image](https://github.com/user-attachments/assets/6b6c321a-f0ec-4ffb-8476-4353e93450dc)# OC进阶
 
 ## 1、runtime库函数
 头文件：类相关函数#import<objc/runtime.h>
@@ -895,6 +895,17 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 @interface Person ： NSObject
 @property(nonatomic,assign) int age;
 @end
+
+等同于
+
+@interface Person ： NSObject
+{
+    int _age;
+}
+-(void) setAge:(int) age;
+-(int) age;
+@end
+
 ~~~
 
 
