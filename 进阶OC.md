@@ -880,10 +880,20 @@ key-value observe
 
 
 # KVC
-
+key-value Coding 键值编码，可以通过一个key来访问某个属性
 
 
 # Category
+## 1、
+
+## +load方法
+
+## +initialize方法
+
+
+
+# Block
+
 
 
 
