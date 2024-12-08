@@ -932,7 +932,13 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 @end
 
 ~~~
+![image](https://github.com/user-attachments/assets/b20fb767-bb85-4f52-806e-6d0c39dc6411)
 
+在Category底层中也是没有存储成员变量的：
+![image](https://github.com/user-attachments/assets/c42da3fd-6378-42ff-988e-5410470766d1)
+
+
+1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
 # Block
 
