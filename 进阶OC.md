@@ -937,6 +937,47 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 在Category底层中也是没有存储成员变量的：
 ![image](https://github.com/user-attachments/assets/c42da3fd-6378-42ff-988e-5410470766d1)
 
+~~~objective-c
+解决方法1：利用全局变量存储，但是这样的话多创建几个对象，使用的是一个全局变量
+
+@implementation Person (Test)
+
+int weight_;
+
+-(void)setWeight:(int) weight{
+    weight_ = weight;
+}
+
+-(int) weight{
+    return weight_;
+}
+
+@end
+
+解决方法2：利用字典
+
+@implementation Person (Test)
+
+NSMutableDictionary *weights_;
+
++(void)load{
+    weights_ = [NSMutableDictionary dictionary];
+}
+
+-(void)setWeight:(int) weight{
+    NSString* key = [NSString stringWithFormat:@"%p",self];
+    weights_[key] = @(weight);
+}
+
+-(int) weight{
+    NSString* key = [NSString stringWithFormat:@"%p",self];
+    return [weights_[key] intValue];
+}
+
+@end
+~~~
+![image](https://github.com/user-attachments/assets/6bf6e285-0cd3-4e57-823a-9b1283263417)
+
 
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
