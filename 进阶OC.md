@@ -36,8 +36,34 @@ Class object_getClass(id obj)
         
         传入meta-class对象，返回NSObject(基类)的meta-class对象
 
+## 5、NSObject转成cpp代码
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 
-## 5、三种OC对象
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSObject* abd = [[NSObject alloc] init];
+    }
+    return 0;
+}
+~~~
+
+代码：
+
+struct NSObject_IMPL {
+	Class isa;
+};
+
+typedef struct objc_class *Class;
+struct objc_object {
+    Class _Nonnull isa __attribute__((deprecated));
+};
+
+
+
+## 6、三种OC对象
 instance  实例对象  ：  isa指针、其他成员变量
 
 class     类对象    ：  isa指针、superclass指针、类的属性信息、对象方法信息（-方法）、类的协议信息、instance对象的成员变量的描述信息
@@ -48,7 +74,7 @@ meta-class  元对象  ：  isa指针、superclass指针、类方法信息（+�
 
 沿着路线查找最终找不到返回错误：[ERROR: unrecognized selector sent to instance]
 
-## 6、instance、class、meta-class（isa、superclass）总结
+## 7、instance、class、meta-class（isa、superclass）总结
 ![image](https://github.com/user-attachments/assets/59e1fe72-2929-41ae-a581-74e5107bc165)
 
 
@@ -85,7 +111,7 @@ int main(int argc, const char * argv[]) {
 详细解释：runtime对isa的优化
 
 
-## 7、objc_msgSend
+## 8、objc_msgSend
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -180,7 +206,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 8、OC的消息转发
+## 9、OC的消息转发
 ### 如果有一个没有实现的函数，程序崩掉
 ~~~objective-c
 #import <Foundation/Foundation.h>
@@ -401,7 +427,7 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## 9、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
+## 10、class_getInstanceSize ()方法可以计算一个类的实例对象所实际需要的的空间大小
 ~~~objective-c
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
@@ -533,7 +559,7 @@ instanceSize 实现：有一个buck的宏定义：16、32、48、64、80 ...
 ~~~
 
 
-## 10、Method class_getInstanceMethod(Class cls, SEL sel)
+## 11、Method class_getInstanceMethod(Class cls, SEL sel)
 ~~~objective-c
 Method class_getInstanceMethod(Class cls, SEL sel)
 {
@@ -598,7 +624,7 @@ static inline Method _method_sign(struct method_t *m) {
 ~~~
 
 
-## 11、IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
+## 12、IMP class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
 ~~~objective-c
 IMP
 class_replaceMethod(Class cls, SEL name, IMP imp, const char *types)
