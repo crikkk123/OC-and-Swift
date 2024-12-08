@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/6b6c321a-f0ec-4ffb-8476-4353e93450dc)# OC进阶
+# OC进阶
 
 ## 1、runtime库函数
 头文件：类相关函数#import<objc/runtime.h>
