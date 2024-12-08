@@ -918,6 +918,19 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 
 @end
 
+添加一个分类
+
+@interface Person(Test)
+@property(nonatomic,assign) int weight;
+@end
+
+它会变为下面，私有变量不会生成，并且只有函数声明，既然他不提供手动添加成员变量和实现get、set方法，这样是报错的
+
+@interface Person(Test)
+-(void)setWeight:(int)weight;
+-(int) weight;
+@end
+
 ~~~
 
 
