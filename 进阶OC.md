@@ -1085,6 +1085,62 @@ static const char WeightKey;
 @end
 
 
+-----------------------------------------------------------------------------------------------------------------
+利用字符串常量
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,@"name",name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, @"name");
+}
+
+
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,@"weight",@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, @"weight") intValue];
+}
+
+@end
+
+
+---------------------------------------------------------------------------------
+使用selector方法
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,@selector(name),name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, @selector(name));
+}
+
+
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,@selector(weight),@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, @selector(weight)) intValue];
+}
+
+@end
+
 ~~~
 
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
