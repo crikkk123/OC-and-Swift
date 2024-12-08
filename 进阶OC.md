@@ -705,7 +705,7 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 ~~~
 
 
-## 12、KVO
+# KVO
 key-value observe
 
 ~~~objective-c
