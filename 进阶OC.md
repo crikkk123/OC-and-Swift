@@ -643,10 +643,14 @@ instanceSize 实现：有一个buck的宏定义：16、32、48、64、80 ...
             return cache.fastInstanceSize(extraBytes);
         }
 
-        size_t size = alignedInstanceSize() + extraBytes;
+        size_t size = alignedInstanceSize() + extraBytes;	// 调用alignedInstanceSize，一般extraBytes为0
         // CF requires all objects be at least 16 bytes.
         if (size < 16) size = 16;
         return size;
+    }
+
+    uint32_t alignedInstanceSize() const {
+        return word_align(unalignedInstanceSize());		// 内存对齐后的
     }
 ~~~
 
