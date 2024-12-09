@@ -1422,7 +1422,28 @@ objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
 # Block
+~~~objective-c
+#import <Foundation/Foundation.h>
 
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        ^{
+            NSLog(@"asd");
+            NSLog(@"sa435dsfsd");
+        }();
+        
+        void (^block)() = ^{
+            NSLog(@"wkeqjkrg");
+            NSLog(@"12335");
+        };
+        block();
+        
+    }
+    return 0;
+}
+~~~
+block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了
+函数调用以及函数调用环境的OC对象
 
 
 
