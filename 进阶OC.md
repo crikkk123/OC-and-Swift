@@ -607,7 +607,7 @@ _class_createInstance(Class cls, size_t extraBytes,
     bool fast = cls->canAllocNonpointer();
     size_t size;
 
-    size = cls->instanceSize(extraBytes);
+    size = cls->instanceSize(extraBytes);	// 关键
     if (outAllocatedSize) *outAllocatedSize = size;
 
     id obj = objc::malloc_instance(size, cls);
