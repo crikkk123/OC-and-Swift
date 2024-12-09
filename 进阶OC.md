@@ -1432,16 +1432,52 @@ int main(int argc, const char * argv[]) {
             NSLog(@"sa435dsfsd");
         }();
         
-        void (^block)() = ^{
-            NSLog(@"wkeqjkrg");
+        int age = 10;
+        
+        void (^block)(int,int) = ^(int a,int b){
+            NSLog(@"wkeqjkrg -  %@",age);
             NSLog(@"12335");
         };
-        block();
+        block(10,20);
         
     }
     return 0;
 }
 ~~~
+~~~objective-c
+转成cpp代码
+
+struct __block_impl {
+  void *isa;
+  int Flags;
+  int Reserved;
+  void *FuncPtr;
+};
+
+struct __main_block_impl_1 {
+  struct __block_impl impl;	// 变量相当于把上面结构体内的成员拿过来
+  struct __main_block_desc_1* Desc;
+  int age;			// 函数里面需要用到外面的age，把他封装到里面
+  __main_block_impl_1(void *fp, struct __main_block_desc_1 *desc, int _age, int flags=0) : age(_age) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+
+int main(int argc, const char * argv[]) {
+    /* @autoreleasepool */ { __AtAutoreleasePool __autoreleasepool; 
+        ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA))();
+        int age = 10;
+        void (*block)(int,int) = ((void (*)(int, int))&__main_block_impl_1((void *)__main_block_func_1, &__main_block_desc_1_DATA, age));
+        ((void (*)(__block_impl *, int, int))((__block_impl *)block)->FuncPtr)((__block_impl *)block, 10, 20);
+    }
+    return 0;
+}
+~~~
+
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
 
 
