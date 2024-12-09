@@ -885,6 +885,99 @@ key-value Coding 键值编码，可以通过一个key来访问某个属性
 
 # Category
 ## 1、category的底层实现原理
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+-(void)run;
+
+@end
+
+
+
+NS_ASSUME_NONNULL_END
+
+#import "Person.h"
+
+@implementation Person
+
+-(void)run{
+    NSLog(@"run");
+}
+
+@end
+
+
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person (Eat)
+
+-(void)eat;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
+#import "Person+Eat.h"
+
+@implementation Person (Eat)
+
+-(void)eat{
+    NSLog(@"eat");
+}
+
+@end
+
+
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person (Test)
+
+-(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
+#import "Person+Test.h"
+
+@implementation Person (Test)
+
+-(void)test{
+    NSLog(@"test");
+}
+
+@end
+
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import "Person+Test.h"
+#import "Person+Eat.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        [p run];
+        [p test];
+        [p eat];
+    }
+    return 0;
+}
+
+~~~
+
+
+
 
 ## +load方法
 调用时机：+load方法会在Runtime加载类对象(class)和分类(category)的时候调用
