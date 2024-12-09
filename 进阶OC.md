@@ -1346,6 +1346,63 @@ public:
     }
 };
 
+typedef DenseMap<const void *, ObjcAssociation> ObjectAssociationMap;
+
+
+api那个存储在这
+class ObjcAssociation {
+    uintptr_t _policy;
+    id _value;
+public:
+    ObjcAssociation(uintptr_t policy, id value) : _policy(policy), _value(value) {}
+    ObjcAssociation() : _policy(0), _value(nil) {}
+    ObjcAssociation(const ObjcAssociation &other) = default;
+    ObjcAssociation &operator=(const ObjcAssociation &other) = default;
+    ObjcAssociation(ObjcAssociation &&other) : ObjcAssociation() {
+        swap(other);
+    }
+
+    inline void swap(ObjcAssociation &other) {
+        std::swap(_policy, other._policy);
+        std::swap(_value, other._value);
+    }
+
+    inline uintptr_t policy() const { return _policy; }
+    inline id value() const { return _value; }
+
+    inline void acquireValue() {
+        if (_value) {
+            switch (_policy & 0xFF) {
+            case OBJC_ASSOCIATION_SETTER_RETAIN:
+                _value = objc_retain(_value);
+                break;
+            case OBJC_ASSOCIATION_SETTER_COPY:
+                _value = ((id(*)(id, SEL))objc_msgSend)(_value, @selector(copy));
+                break;
+            }
+        }
+    }
+
+    inline void releaseHeldValue() {
+        if (_value && (_policy & OBJC_ASSOCIATION_SETTER_RETAIN)) {
+            objc_release(_value);
+        }
+    }
+
+    inline void retainReturnedValue() {
+        if (_value && (_policy & OBJC_ASSOCIATION_GETTER_RETAIN)) {
+            objc_retain(_value);
+        }
+    }
+
+    inline id autoreleaseReturnedValue() {
+        if (slowpath(_value && (_policy & OBJC_ASSOCIATION_GETTER_AUTORELEASE))) {
+            return objc_autorelease(_value);
+        }
+        return _value;
+    }
+};
+
 ~~~
 
 
