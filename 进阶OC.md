@@ -1250,6 +1250,12 @@ static const char WeightKey;
 
 ~~~
 
+关联对象的底层原理：
+AssociationManager
+AssociationHashMap
+ObjectAssociationMap
+ObjcAssociation
+
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
 # Block
