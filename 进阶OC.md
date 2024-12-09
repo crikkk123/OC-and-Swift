@@ -1256,6 +1256,99 @@ AssociationHashMap
 ObjectAssociationMap
 ObjcAssociation
 
+~~~objective-c
+源码：
+
+void
+objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)
+{
+    _object_set_associative_reference(object, key, value, policy);
+}
+
+
+void
+_object_set_associative_reference(id object, const void *key, id value, uintptr_t policy)
+{
+    // This code used to work when nil was passed for object and key. Some code
+    // probably relies on that to not crash. Check and handle it explicitly.
+    // rdar://problem/44094390
+    if (!object && !value) return;
+
+    if (object->getIsa()->forbidsAssociatedObjects())
+        _objc_fatal("objc_setAssociatedObject called on instance (%p) of class %s which does not allow associated objects", object, object_getClassName(object));
+
+    DisguisedPtr<objc_object> disguised{(objc_object *)object};
+    ObjcAssociation association{policy, value};
+
+    // retain the new value (if any) outside the lock.
+    association.acquireValue();
+
+    bool isFirstAssociation = false;
+    {
+        AssociationsManager manager;
+        AssociationsHashMap &associations(manager.get());
+
+        if (value) {
+            auto refs_result = associations.try_emplace(disguised, ObjectAssociationMap{});
+            if (refs_result.second) {
+                /* it's the first association we make */
+                isFirstAssociation = true;
+            }
+
+            /* establish or replace the association */
+            auto &refs = refs_result.first->second;
+            auto result = refs.try_emplace(key, std::move(association));
+            if (!result.second) {
+                association.swap(result.first->second);
+            }
+        } else {
+            auto refs_it = associations.find(disguised);
+            if (refs_it != associations.end()) {
+                auto &refs = refs_it->second;
+                auto it = refs.find(key);
+                if (it != refs.end()) {
+                    association.swap(it->second);
+                    refs.erase(it);
+                    if (refs.size() == 0) {
+                        associations.erase(refs_it);
+
+                    }
+                }
+            }
+        }
+    }
+
+    // Call setHasAssociatedObjects outside the lock, since this
+    // will call the object's _noteAssociatedObjects method if it
+    // has one, and this may trigger +initialize which might do
+    // arbitrary stuff, including setting more associated objects.
+    if (isFirstAssociation)
+        object->setHasAssociatedObjects();
+
+    // release the old value (outside of the lock).
+    association.releaseHeldValue();
+}
+
+class AssociationsManager {
+    using Storage = ExplicitInitDenseMap<DisguisedPtr<objc_object>, ObjectAssociationMap>;
+    static Storage _mapStorage;
+
+public:
+    AssociationsManager()   { AssociationsManagerLock.lock(); }
+    ~AssociationsManager()  { AssociationsManagerLock.unlock(); }
+
+    AssociationsHashMap &get() {
+        return _mapStorage.get();
+    }
+
+    static void init() {
+        _mapStorage.init();
+    }
+};
+
+~~~
+
+
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
 # Block
