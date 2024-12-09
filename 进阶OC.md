@@ -1411,7 +1411,14 @@ public:
 
 ~~~
 
+OBJC_EXPORT void
+objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
+                         id _Nullable value, objc_AssociationPolicy policy)
 
+![image](https://github.com/user-attachments/assets/e767fbc5-9ffd-4108-92e4-9cecedd7c172)
+
+
+-------------------------------------------------------------------------------------------------------------
 1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
 
 # Block
