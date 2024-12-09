@@ -1285,7 +1285,7 @@ _object_set_associative_reference(id object, const void *key, id value, uintptr_
 
     bool isFirstAssociation = false;
     {
-        AssociationsManager manager;
+        AssociationsManager manager;	// 在下面这个类型的具体
         AssociationsHashMap &associations(manager.get());
 
         if (value) {
@@ -1330,7 +1330,7 @@ _object_set_associative_reference(id object, const void *key, id value, uintptr_
 }
 
 class AssociationsManager {
-    using Storage = ExplicitInitDenseMap<DisguisedPtr<objc_object>, ObjectAssociationMap>;
+    using Storage = ExplicitInitDenseMap<DisguisedPtr<objc_object>, ObjectAssociationMap>; 	// value的类型在下面
     static Storage _mapStorage;
 
 public:
@@ -1346,13 +1346,13 @@ public:
     }
 };
 
-typedef DenseMap<const void *, ObjcAssociation> ObjectAssociationMap;
+typedef DenseMap<const void *, ObjcAssociation> ObjectAssociationMap;	 	// value的类型在下面
 
 
 api那个存储在这
 class ObjcAssociation {
-    uintptr_t _policy;
-    id _value;
+    uintptr_t _policy;	// 1
+    id _value;		// 2
 public:
     ObjcAssociation(uintptr_t policy, id value) : _policy(policy), _value(value) {}
     ObjcAssociation() : _policy(0), _value(nil) {}
