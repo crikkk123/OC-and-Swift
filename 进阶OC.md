@@ -1528,7 +1528,55 @@ int main(int argc, const char * argv[]) {
 ~~~
 ![image](https://github.com/user-attachments/assets/dcaac691-9564-4847-b420-8a88d5ebeb9f)
 
+~~~objective-c
+#import <Foundation/Foundation.h>
 
+
+struct __block_impl {
+  void *isa;
+  int Flags;
+  int Reserved;
+  void *FuncPtr;
+};
+
+static struct __main_block_desc_1 {
+  size_t reserved;
+  size_t Block_size;
+};
+
+struct __main_block_impl_1 {
+  struct __block_impl impl;
+  struct __main_block_desc_1* Desc;
+  int age;
+};
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        ^{
+            NSLog(@"asd");
+            NSLog(@"sa435dsfsd");
+        }();
+        
+        int age = 100;
+        
+        void (^block)(int,int) = ^(int a,int b){
+            NSLog(@"wkeqjkrg -  %d",age);
+            NSLog(@"12335");
+        };
+        
+        age = 200;
+        
+        block(10,20);
+        
+        struct __main_block_impl_1* myblo = (__bridge struct __main_block_impl_1*)block;
+        
+        NSLog(@"end");
+    }
+    return 0;
+}
+
+此时打印的age是100
+~~~~
 
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
 
