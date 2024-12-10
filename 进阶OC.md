@@ -1560,6 +1560,7 @@ int main(int argc, const char * argv[]) {
         int age = 100;
         
         void (^block)(int,int) = ^(int a,int b){
+		// age的值捕获进来（capture）
             NSLog(@"wkeqjkrg -  %d",age);
             NSLog(@"12335");
         };
@@ -1576,6 +1577,19 @@ int main(int argc, const char * argv[]) {
 }
 
 此时打印的age是100
+
+转换后的CPP代码
+struct __main_block_impl_1 {
+  struct __block_impl impl;
+  struct __main_block_desc_1* Desc;
+  int age;	// 和外面的成员变量一样
+  __main_block_impl_1(void *fp, struct __main_block_desc_1 *desc, int _age, int flags=0) : age(_age) {	  // 值传递
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
 ~~~~
 
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
