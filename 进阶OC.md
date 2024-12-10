@@ -13,6 +13,8 @@
 ## 3、OC代码转换为CPP代码的命令
 ~~~text
 xrun -sdk iphoneos clang -arch arm64 -rewrite-objc OC源文件 -o 输出的CPP文件  链接其他的（-framework UIKit）
+
+clang -rewrite-objc main.m -o main.cpp
 ~~~
 
 
@@ -1591,6 +1593,68 @@ struct __main_block_impl_1 {
   }
 };
 ~~~~
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        ^{
+            NSLog(@"asd");
+            NSLog(@"sa435dsfsd");
+        }();
+        
+        auto int age = 100;
+        static int height = 12;
+        
+        void (^block)(int,int) = ^(int a,int b){
+            NSLog(@"wkeqjkrg -  %d %d",age,height);
+            NSLog(@"12335");
+        };
+        
+        age = 200;
+        height = 2354;
+        
+        block(10,20);
+        
+        struct __main_block_impl_1* myblo = (__bridge struct __main_block_impl_1*)block;
+        
+        NSLog(@"end");
+    }
+    return 0;
+}
+
+static 是会修改的
+
+struct __main_block_impl_1 {
+  struct __block_impl impl;
+  struct __main_block_desc_1* Desc;
+  int age;
+  int *height;
+  __main_block_impl_1(void *fp, struct __main_block_desc_1 *desc, int _age, int *_height, int flags=0) : age(_age), height(_height) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+int main(int argc, const char * argv[]) {
+    /* @autoreleasepool */ { __AtAutoreleasePool __autoreleasepool; 
+        ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA))();
+        auto int age = 100;		// 离开作用域就释放了，闭包存储副本
+        static int height = 12;		// 一直在内存中
+        void (*block)(int,int) = ((void (*)(int, int))&__main_block_impl_1((void *)__main_block_func_1, &__main_block_desc_1_DATA, age, &height));
+        age = 200;
+        height = 2354;
+        ((void (*)(__block_impl *, int, int))((__block_impl *)block)->FuncPtr)((__block_impl *)block, 10, 20);
+        struct __main_block_impl_1* myblo = (__bridge struct __main_block_impl_1*)block;
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_12_mm73jkz91yndqd1l04vb3s6m0000gn_T_main_6b91ae_mi_4);
+    }
+    return 0;
+}
+
+~~~
 
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
 
