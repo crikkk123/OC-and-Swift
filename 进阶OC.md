@@ -1656,6 +1656,78 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+int age = 100;
+static int height = 12;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        
+        void (^block)() = ^(){
+            NSLog(@"wkeqjkrg -  %d %d",age,height);
+        };
+        
+        age = 200;
+        height = 2354;
+        
+        block();
+        
+        NSLog(@"end");
+    }
+    return 0;
+}
+
+cpp代码
+int age = 100;
+static int height = 12;
+
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, int flags=0) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+可以看到没有捕获到结构体中
+~~~
+
+~~~objective-c
+Person.h:
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+-(void) test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+Person.m:
+#import "Person.h"
+
+@implementation Person
+
+-(void)test{         // 对应C语言：void test(Person* self, SEL _cmd)
+    void(^block1)(void) = ^{
+        NSLog(@"------ %p",self);
+    };
+    block1();
+}
+
+@end
+
+转成cpp代码：
+
+~~~
+
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
 
 
