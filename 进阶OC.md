@@ -1740,6 +1740,50 @@ struct __Person__test_block_impl_0 {
 
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
 
+block的类型：
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+void test(){
+    void (^block)(void) = ^{
+        NSLog(@"Hello world");
+    };
+    
+    NSLog(@"%@",[block class]);
+    NSLog(@"%@",[[block class] superclass]);
+    NSLog(@"%@",[[[block class] superclass] superclass]);
+    NSLog(@"%@",[[[[block class] superclass] superclass] superclass]);
+}
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        void (^block1)(void) = ^{
+            NSLog(@"Hello");
+        };
+        
+        int age = 10;
+        void (^block2)(void) = ^{
+            NSLog(@"Hello world %d",age);
+        };
+        
+        NSLog(@"%@  %@  %@",[block1 class],[block2 class],[^{
+            NSLog(@"%d",age);
+        } class]);
+    }
+    return 0;
+}
+
+
+~~~
+
+block有3种类型，可以调用class方法或者isa指针查看具体的类型，最终都继承NSBlock类型
+_NSGlobalBlock__   (_NSConcreateGlobalBlock)     没有访问auto变量
+_NSStackBlock__    (_NSConcreateStackBlock)      访问了auto变量
+_NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy
+
+~~~objective-c
+
+~~~
 
 
 # runtime
