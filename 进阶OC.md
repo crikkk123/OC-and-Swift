@@ -1725,7 +1725,17 @@ Person.m:
 @end
 
 转成cpp代码：
-
+struct __Person__test_block_impl_0 {
+  struct __block_impl impl;
+  struct __Person__test_block_desc_0* Desc;
+  Person *self;			// 捕获了self
+  __Person__test_block_impl_0(void *fp, struct __Person__test_block_desc_0 *desc, Person *_self, int flags=0) : self(_self) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
 ~~~
 
 block本质上也是一个oc对象，也有isa指针，只要有isa指针就是oc对象，block是封装了函数调用以及函数调用环境的OC对象
