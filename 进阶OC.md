@@ -1781,6 +1781,9 @@ _NSGlobalBlock__   (_NSConcreateGlobalBlock)     没有访问auto变量
 _NSStackBlock__    (_NSConcreateStackBlock)      访问了auto变量
 _NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy
 
+![image](https://github.com/user-attachments/assets/9eed55d2-9621-4f6f-86fb-274662997444)
+
+
 ~~~objective-c
 
 ~~~
