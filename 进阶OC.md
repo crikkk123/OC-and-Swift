@@ -1790,7 +1790,53 @@ _NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy
 
 
 ~~~objective-c
+#import <Foundation/Foundation.h>
 
+void (^block123)(void);
+
+void test(){
+    int age = 100;
+    block123 = ^{
+        NSLog(@"block  %d ",age);
+    };
+}
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        
+        // Global:没有访问auto变量   放在数据段
+        void (^block)(void) = ^{
+            NSLog(@"Hello world");
+        };
+        NSLog(@"%@",[block class]);   // __NSGlobalBlock__
+        
+        
+        // stack：访问了auto变量
+        int age = 10;
+        void (^block1)(void) = ^{
+            NSLog(@"Hello world - %d",age);
+        };
+        NSLog(@"%@",[block1 class]);    // ARC：__NSMallocBlock__
+        
+        int weight = 10;
+        void (^block2)(void) = [^{
+            NSLog(@"Hello world - %d",weight);
+        } copy];
+        NSLog(@"%@",[block2 class]);
+        
+        test();
+        block123();
+        
+    }
+    return 0;
+}
+
+上面都是MRC环境下
+输出：
+__NSGlobalBlock__
+__NSStackBlock__
+__NSMallocBlock__
+block  -1074793912
 ~~~
 
 
