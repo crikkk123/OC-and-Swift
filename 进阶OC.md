@@ -1786,6 +1786,8 @@ _NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy
 
 ![image](https://github.com/user-attachments/assets/9eed55d2-9621-4f6f-86fb-274662997444)
 
+![image](https://github.com/user-attachments/assets/98f2144d-0349-4c80-88c7-d45ecbbbd1b0)
+
 
 ~~~objective-c
 
