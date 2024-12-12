@@ -1778,15 +1778,16 @@ int main(int argc, const char * argv[]) {
 
 block有3种类型，可以调用class方法或者isa指针查看具体的类型，最终都继承NSBlock类型
 
-_NSGlobalBlock__   (_NSConcreateGlobalBlock)     没有访问auto变量
+_NSGlobalBlock__   (_NSConcreateGlobalBlock)     没有访问auto变量    程序的数据区域     copy：什么也不做    
+  
+_NSStackBlock__    (_NSConcreateStackBlock)      访问了auto变量      栈                 copy：从栈复制到堆
 
-_NSStackBlock__    (_NSConcreateStackBlock)      访问了auto变量
-
-_NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy
-
+_NSMallocBlock__   (_NSConcreteMallocBlock)      __NSStackBlock__调用了copy             copy：引用计数增加
+ 
 ![image](https://github.com/user-attachments/assets/9eed55d2-9621-4f6f-86fb-274662997444)
 
 ![image](https://github.com/user-attachments/assets/98f2144d-0349-4c80-88c7-d45ecbbbd1b0)
+
 
 
 ~~~objective-c
@@ -1821,7 +1822,7 @@ int main(int argc, const char * argv[]) {
         int weight = 10;
         void (^block2)(void) = [^{
             NSLog(@"Hello world - %d",weight);
-        } copy];
+        } copy];	// 会在堆上创建内存存放和栈上相同的值
         NSLog(@"%@",[block2 class]);
         
         test();
@@ -1839,6 +1840,105 @@ __NSMallocBlock__
 block  -1074793912
 ~~~
 
+ARC环境下，编译器会根据情况自动将栈上的block复制到堆上：
+1、block作为函数返回值时
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+Block myBlock(){
+    // ARC   release也不需要我们调用
+    return ^{
+        NSLog(@"hello world");
+    };;
+}
+
+Block myBlock2(){
+    int age = 10;
+    return ^{
+        NSLog(@"hello world %d",age);
+    };;
+}
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1 = myBlock();
+        block1();
+        NSLog(@"%@",[block1 class]);  // __NSGlobalBlock__ 进行copy什么也不做
+        
+        Block block2 = myBlock2();
+        block2();
+        NSLog(@"%@",[block2 class]);  // __NSMallocBlock__
+    }
+    return 0;
+}
+
+~~~
+2、将block赋值给__strong指针时
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        int age = 10;
+        Block block = ^{
+            NSLog(@"hello world %d",age);
+        };
+        NSLog(@"%@",[block class]);   // ARC: __NSMallocBlock__    MRC: __NSStackBlock__
+        
+        
+        NSLog(@"%@",[^{         // __NSStackBlock__  没有强指针指向
+            NSLog(@"hello world %d",age);
+        } class]);
+        
+        NSLog(@"%@",[^{         // __NSGlobalBlock__
+            NSLog(@"hello world %d");
+        } class]);
+    }
+    return 0;
+}
+
+~~~
+
+3、block作为Cocoa API中方法名含有usingBlock的方法参数时
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+// 像这种
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSArray* array = @[];
+        
+        [array enumerateObjectsUsingBlock:<#^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop)block#>]
+    }
+    return 0;
+}
+
+~~~
+
+4、block作为GCD API的方法参数时
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            <#code to be executed once#>
+        });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<#delayInSeconds#> * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            <#code to be executed after a specified delay#>
+        });
+    }
+    return 0;
+}
+
+~~~
 
 # runtime
 ## 1、Apple对isa的优化
