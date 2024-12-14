@@ -1998,7 +1998,155 @@ struct __main_block_impl_0 {
 };
 有一个Person类型的指针，其实将Person对象的引用计数+1，当引用计数为0的时候进行释放（C++智能指针）
 
+
+在ARC环境下，自动copy：
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1;
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+            
+            block1 = ^{
+                NSLog(@"%d",p.age);
+            };
+            [p release];
+        }
+        
+//        block1();
+        NSLog(@"------");
+    }
+    return 0;
+}
+输出：Person dealloc   ------
+
+如果是MRC环境下其操作，其实就是copy，将栈上的对象拷贝到堆上（前面写过），栈空间上的block不用持有外面对象的，如果是堆空间上的是可以保住外面对象的声明周期的：
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1;
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+            
+            block1 = [^{
+                NSLog(@"%d",p.age);
+            } copy];
+            [p release];
+        }
+        
+//        block1();
+        NSLog(@"------");
+    }
+    return 0;
+}
+
+
+我们回到ARC环境：
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1;
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+            
+            __weak Person* weakPer = p;
+            block1 = ^{
+                NSLog(@"%d",weakPer.age);
+            };
+        }
+        
+//        block1();
+        NSLog(@"------");
+    }
+    return 0;
+}
+输出：Person dealloc、------
+
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1;
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+            
+            __weak Person* weakPer = p;
+            block1 = ^{
+                NSLog(@"%d",weakPer.age);
+            };
+        }
+        
+//        block1();
+        NSLog(@"------");
+    }
+    return 0;
+}
+
+转换成cpp代码：
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  Person *__weak weakPer;
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, Person *__weak _weakPer, int flags=0) : weakPer(_weakPer) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+可以发现__main_block_impl_0与之前有所不同
+
+static struct __main_block_desc_0 {
+  size_t reserved;
+  size_t Block_size;
+  void (*copy)(struct __main_block_impl_0*, struct __main_block_impl_0*);
+  void (*dispose)(struct __main_block_impl_0*);
+} __main_block_desc_0_DATA = { 0, sizeof(struct __main_block_impl_0), __main_block_copy_0, __main_block_dispose_0};
+
+第三个参数传递的是__main_block_copy_0的地址
+
+在内部调用_Block_object_assign
+static void __main_block_copy_0(struct __main_block_impl_0*dst, struct __main_block_impl_0*src) {_Block_object_assign((void*)&dst->weakPer, (void*)src->weakPer, 3/*BLOCK_FIELD_IS_OBJECT*/);}
+
+第四个参数传递的是__main_block_dispose_0
+static void __main_block_dispose_0(struct __main_block_impl_0*src) {_Block_object_dispose((void*)src->weakPer, 3/*BLOCK_FIELD_IS_OBJECT*/);}
+
 ~~~
+
+总结：
+当block内部访问了对象类型的auto变量时，如果block是在栈上，将不会对auto变量产生强引用
+
+当block被拷贝到堆上，会调用block内部的copy函数，copy函数内部会调用_Block_object_assign函数，_Block_object_assign函数会根据auto变量的修饰符(_strong、_weak、_unsafe_unretained)做出相应的操作，形成强引用(retain)或者弱引用
+
+当block从堆上移除，会调用block内部的dispose函数，dispose函数内部会调用_Block_object_dispose函数，_Block_object_dispose函数会自动释放引用的auto变量（release）
+
+copy函数：栈上的Block复制到堆时调用     dispose 堆上的Block被废弃时调用
 
 ~~~objective-c
 
