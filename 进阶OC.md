@@ -1984,6 +1984,20 @@ int main(int argc, const char * argv[]) {
 }
 输出结果：10、Person dealloc
 
+转成的cpp代码：
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  Person *p;
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, Person *_p, int flags=0) : p(_p) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+有一个Person类型的指针，其实将Person对象的引用计数+1，当引用计数为0的时候进行释放（C++智能指针）
+
 ~~~
 
 ~~~objective-c
