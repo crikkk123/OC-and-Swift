@@ -1937,8 +1937,59 @@ int main(int argc, const char * argv[]) {
     }
     return 0;
 }
+~~~
+
+~~~objective-c
+
+在ARC环境下Person对象出了作用域调用析构
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+        }
+        
+        
+    return 0;
+}
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Block block1;
+        
+        {
+            Person* p = [[Person alloc] init];
+            p.age = 10;
+            
+            block1 = ^{
+                NSLog(@"%d",p.age);
+            };
+        }
+        
+        block1();
+    }
+    return 0;
+}
+输出结果：10、Person dealloc
 
 ~~~
+
+~~~objective-c
+
+~~~
+
 
 # runtime
 ## 1、Apple对isa的优化
