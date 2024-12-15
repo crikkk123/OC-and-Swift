@@ -2391,7 +2391,36 @@ struct __main_block_impl_0 {
 我们可以看到 __Block_byref_person_0 *person; // by ref这句，其实就是使用__block产生的对象，指向这个对象的指针一定是强引用的，这个对象指针的Person对象根据我们传入的强/弱引用来进行引用
 
 这个也很好验证，可以利用作用域来传入强引用和弱引用来验证，由于前面写了很多次，我这里就不验证了
+
+
+MRC环境：
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        __block Person* person = [[Person alloc] init];
+        Block block = [^{
+            NSLog(@"%p",person);
+        } copy];
+        
+        [person release];
+        
+        block();
+        
+        [block release];
+    }
+    return 0;
+}
+在没有打印person地址之前就打印了Person的析构，这里用到了__block修饰，内部结构就是block指向block包装的对象，这个包装的对象指向Person（这个永远为弱引用），在MRC环境下不会进行retain操作
 ~~~
+
+
+
+
 
 
 # runtime
