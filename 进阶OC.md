@@ -2418,7 +2418,10 @@ int main(int argc, const char * argv[]) {
 在没有打印person地址之前就打印了Person的析构，这里用到了__block修饰，内部结构就是block指向block包装的对象，这个包装的对象指向Person（这个永远为弱引用），在MRC环境下不会进行retain操作
 ~~~
 
+### 循环引用
+~~~objective-c
 
+~~~
 
 
 
