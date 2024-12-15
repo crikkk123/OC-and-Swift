@@ -2317,6 +2317,82 @@ int main(int argc, const char * argv[]) {
 ![image](https://github.com/user-attachments/assets/d74e93b7-d8f9-4648-83ca-728579ca4029)
 
 
+当block在栈上时，并不会对__block变量产生强引用
+
+当block被copy到堆时，会调用block内部的copy函数，copy函数内部会调用_Block_object_assign函数，_Block_object_assign函数对_block变量形成强引用（retain）
+
+当block从堆中移除时，会调用block内部的dispose函数，dispose函数内部会调用_Block_object_dispose函数，_Block_object_dispose函数会自动释放引用的_block变量（release）
+
+_block的_forwarding指针：在栈上，自己的forwarding指针指向自己本身的指针，复制到堆上后，栈上的forwarding指针指向复制到堆上的_block变量用结构体的指针（堆上的forwarding指针指向自己本身的指针）
+
+### 对象类型的auto变量、_block变量
+当block在栈上时，对他们都不会产生强引用
+
+当block拷贝到堆上时，都会通过copy函数来处理他们：
+	_block变量（假设变量名叫做a）_Block_object_assign((void*)&dst->p,(void*)src->p,3/*BLOCK_FIELD_IS_OBJECT*/);
+
+ 	对象类型的auto变量（假设变量名叫做p） _Block_object_assign((void*)&dst->p,(void*)src->p,3/*BLOCK_FIELD_IS_OBJECT*/);
+
+当block从堆上移除时，都会通过dispose函数来释放
+	_block变量（假设变量名叫做a），_Block_object_dispose((void*)src->a,8/*BLOCK_FIELD_IS_BYREF*/);
+
+ 	对象类型的auto变量（假设变量名叫做p），_Block_object_dispose((void*)src->p,3/*BLOCK_FIELD_IS_OBJECT*/);
+
+对象：BLOCK_FIELD_IS_OBJECT        _block变量：BLOCK_FIELD_IS_BYREF
+
+### __block修饰对象
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        __block Person* person = [[Person alloc] init];
+        person.age = 10;
+        
+        Block block = ^{
+            person.age = 20;
+            NSLog(@"%d",person.age);
+        };
+        block();
+    }
+    return 0;
+}
+
+
+
+转换为cpp代码：
+typedef void (*Block)(void);
+struct __Block_byref_person_0 {
+  void *__isa;
+__Block_byref_person_0 *__forwarding;
+ int __flags;
+ int __size;
+ void (*__Block_byref_id_object_copy)(void*, void*);
+ void (*__Block_byref_id_object_dispose)(void*);
+ Person *__strong person;
+};
+
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  __Block_byref_person_0 *person; // by ref
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, __Block_byref_person_0 *_person, int flags=0) : person(_person->__forwarding) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+我们可以看到 __Block_byref_person_0 *person; // by ref这句，其实就是使用__block产生的对象，指向这个对象的指针一定是强引用的，这个对象指针的Person对象根据我们传入的强/弱引用来进行引用
+
+这个也很好验证，可以利用作用域来传入强引用和弱引用来验证，由于前面写了很多次，我这里就不验证了
+~~~
+
 
 # runtime
 ## 1、Apple对isa的优化
