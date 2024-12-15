@@ -2256,6 +2256,66 @@ int main(int argc, const char * argv[]) {
 这种是没必要加__block的，没有修改arr，只是用到arr往里面添加元素
 ~~~
 
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+
+typedef void (^Block)(void);
+
+struct __Block_byref_age_0 {
+    void *__isa;
+    struct __Block_byref_age_0 *__forwarding;
+    int __flags;
+    int __size;
+    int age;
+};
+
+struct __block_impl {
+    void *isa;
+    int Flags;
+    int Reserved;
+    void *FuncPtr;
+};
+
+struct __main_block_desc_0 {
+    size_t reserved;
+    size_t Block_size;
+    void (*copy)(void);
+    void (*dispose)(void);
+};
+
+struct __main_block_impl_0 {
+    struct __block_impl impl;
+    struct __main_block_desc_0* Desc;
+    struct __Block_byref_age_0 *age;
+};
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        
+        __block int age = 10;
+        Block block = ^{
+            age = 20;
+            NSLog(@"%d",age);
+        };
+        
+        // 0x0000600002808510
+        struct __main_block_impl_0 *p = (__bridge struct __main_block_impl_0*)block;
+        
+//        block();
+        NSLog(@"%p",&age);
+        NSLog(@"-----");
+    }
+    return 0;
+}
+图片：
+~~~
+![image](https://github.com/user-attachments/assets/2d9ed845-78b3-4201-a4ea-ead2bb8737d9)
+结构体__Block_byref_age_0里面的age跟我们直接打印age的地址是一样的，打印出来地址差18，结构体偏移后正好为age的地址
+
+同时这也能证明：
+![image](https://github.com/user-attachments/assets/d74e93b7-d8f9-4648-83ca-728579ca4029)
+
 
 
 # runtime
