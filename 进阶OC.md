@@ -2081,32 +2081,6 @@ int main(int argc, const char * argv[]) {
 }
 输出：Person dealloc、------
 
-
-#import <Foundation/Foundation.h>
-#import "Person.h"
-
-typedef void (^Block)(void);
-
-int main(int argc, const char * argv[]) {
-    @autoreleasepool {
-        Block block1;
-        
-        {
-            Person* p = [[Person alloc] init];
-            p.age = 10;
-            
-            __weak Person* weakPer = p;
-            block1 = ^{
-                NSLog(@"%d",weakPer.age);
-            };
-        }
-        
-//        block1();
-        NSLog(@"------");
-    }
-    return 0;
-}
-
 转换成cpp代码：
 struct __main_block_impl_0 {
   struct __block_impl impl;
@@ -2148,9 +2122,140 @@ static void __main_block_dispose_0(struct __main_block_impl_0*src) {_Block_objec
 
 copy函数：栈上的Block复制到堆时调用     dispose 堆上的Block被废弃时调用
 
+
 ~~~objective-c
 
+正常情况下，我们在block里面是没办法直接修改age的值的，底层是创建一个相同的变量（前面写过），我们又不想创建一个全局或者static的变量
+
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        int age = 10;
+        Block block = ^{
+//            age = 20;
+            NSLog(@"%d",age);
+        };
+        block();
+    }
+    return 0;
+}
+
+
+可以用__block
 ~~~
+
+### __block
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        __block int age = 10;
+        Block block = ^{
+            age = 20;
+            NSLog(@"%d",age);
+        };
+        NSLog(@"%d",age);
+        block();
+    }
+    return 0;
+}
+
+转换为cpp代码：
+struct __main_block_impl_0 {
+  struct __block_impl impl;
+  struct __main_block_desc_0* Desc;
+  __Block_byref_age_0 *age; // by ref			这里__block是包装为一个对象
+  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, __Block_byref_age_0 *_age, int flags=0) : age(_age->__forwarding) {
+    impl.isa = &_NSConcreteStackBlock;
+    impl.Flags = flags;
+    impl.FuncPtr = fp;
+    Desc = desc;
+  }
+};
+
+typedef void (*Block)(void);
+struct __Block_byref_age_0 {
+  void *__isa;
+__Block_byref_age_0 *__forwarding;
+ int __flags;
+ int __size;
+ int age;
+};
+
+int main(int argc, const char * argv[]) {
+    /* @autoreleasepool */ { __AtAutoreleasePool __autoreleasepool; 
+        __attribute__((__blocks__(byref))) __Block_byref_age_0 age = {(void*)0,(__Block_byref_age_0 *)&age, 0, sizeof(__Block_byref_age_0), 10};   // 部分1
+        Block block = ((void (*)())&__main_block_impl_0((void *)__main_block_func_0, &__main_block_desc_0_DATA, (__Block_byref_age_0 *)&age, 570425344));
+        NSLog((NSString *)&__NSConstantStringImpl__var_folders_12_mm73jkz91yndqd1l04vb3s6m0000gn_T_main_6519ba_mi_1,(age.__forwarding->age));
+        ((void (*)(__block_impl *))((__block_impl *)block)->FuncPtr)((__block_impl *)block);
+    }
+    return 0;
+}   在主函数中我们看到部分1传递的参数，传到上面的结构体中，__forwarding实际指向的是他自己
+
+static void __main_block_func_0(struct __main_block_impl_0 *__cself) {
+  __Block_byref_age_0 *age = __cself->age; // bound by ref
+
+            (age->__forwarding->age) = 20;
+            NSLog((NSString *)&__NSConstantStringImpl__var_folders_12_mm73jkz91yndqd1l04vb3s6m0000gn_T_main_6519ba_mi_0,(age->__forwarding->age));
+        }    修改age值的时候调用，拿到结构体中的值
+
+
+如果是这种：
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        __block NSObject* obj = [[NSObject alloc] init];
+        Block block = ^{
+            obj = nil;
+            NSLog(@"%p",obj);
+        };
+        block();
+    }
+    return 0;
+}
+
+转成cpp代码：
+typedef void (*Block)(void);
+struct __Block_byref_obj_0 {
+  void *__isa;
+__Block_byref_obj_0 *__forwarding;
+ int __flags;
+ int __size;
+ void (*__Block_byref_id_object_copy)(void*, void*);	// 涉及到了内存管理
+ void (*__Block_byref_id_object_dispose)(void*);
+ NSObject *obj;
+};
+
+注:
+#import <Foundation/Foundation.h>
+
+typedef void (^Block)(void);
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        
+        NSMutableArray* arr = [[NSMutableArray alloc] init];
+        
+        Block block = ^{
+            [arr addObject:@123];
+            NSLog(@"%p",arr);
+        };
+        block();
+    }
+    return 0;
+}
+这种是没必要加__block的，没有修改arr，只是用到arr往里面添加元素
+~~~
+
 
 
 # runtime
