@@ -2505,6 +2505,75 @@ int main(int argc, const char * argv[]) {
 }
 
 _unsafe_unretained 、weak的区别是weak指向的内存回收后会置为nil，另一个仍然指向，指向一块回收的内存
+
+使用_block解决，但是这种方式缺陷是必须调用block
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* person = [[Person alloc] init];
+        person.age = 10;
+        __block Person* pp = person;
+        person.block = ^{
+            NSLog(@"%d",pp.age);
+            pp = nil;
+        };
+        
+        person.block();
+    }
+    NSLog(@"123");
+    return 0;
+}
+
+其实这样的内存结构就是，_block变量持有对象的强引用，对象持有Block强引用，Block持有_block变量强引用，一个三角形的形状
+~~~
+
+### MRC环境下循环引用
+MRC环境下不支持__weak
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* person = [[Person alloc] init];
+        person.age = 10;
+        __unsafe_unretained Person* pp = person;
+        
+        person.block = ^{
+            NSLog(@"%d",pp.age);
+            
+        };
+        [person release];
+    }
+    NSLog(@"123");
+    return 0;
+}
+
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* person = [[Person alloc] init];
+        person.age = 10;
+        __block Person* pp = person;
+        
+        person.block = ^{
+            NSLog(@"%d",pp.age);
+            
+        };
+        [person release];
+    }
+    NSLog(@"123");
+    return 0;
+}
+
+我们前面说过被__block修饰的变量在MRC环境下不会进行retain，也就是不对Person对象进行retain
 ~~~
 
 
