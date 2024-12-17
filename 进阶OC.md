@@ -2419,41 +2419,93 @@ int main(int argc, const char * argv[]) {
 ~~~
 
 ### 循环引用
+ARC环境下：
+
 ~~~objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef void (^Block)(void);
+
+@interface Person : NSObject
+
+@property(nonatomic) int age;
+
+@property(copy,nonatomic) Block block;  // 拷贝到堆上
+
+@end
+
+NS_ASSUME_NONNULL_END
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef void (^Block)(void);
+
+@interface Person : NSObject
+
+@property(nonatomic) int age;
+
+@property(copy,nonatomic) Block block;  // 拷贝到堆上
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+#import "Person.h"
+
+@implementation Person
+
+- (void)dealloc{
+    NSLog(@"Person dealloc");
+}
+
+@end
+
+
 #import <Foundation/Foundation.h>
 #import "Person.h"
 
-
-typedef void (^Block)(void);
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         Person* person = [[Person alloc] init];
         person.age = 10;
-        Block block = [^{
-            NSLog(@"%p",person);
-        } copy];
-        block();
+        person.block = ^{
+            NSLog(@"%d",person.age);
+        };
     }
     NSLog(@"123");
     return 0;
 }
-输出：0x600000784070   123
-可以看到其实并没有打印析构的信息，转成cpp代码
-struct __main_block_impl_0 {
-  struct __block_impl impl;
-  struct __main_block_desc_0* Desc;
-  Person *__strong person;
-  __main_block_impl_0(void *fp, struct __main_block_desc_0 *desc, Person *__strong _person, int flags=0) : person(_person) {
-    impl.isa = &_NSConcreteStackBlock;
-    impl.Flags = flags;
-    impl.FuncPtr = fp;
-    Desc = desc;
-  }
-};
-循环引用，Person不会死因为block指向他，block不会死因为Person指向他
-~~~
 
+输出123
+可以看到并没有打印析构信息
+循环引用：堆上的block指向Person对象，Person对象内部的block指向block
+~~~
+解决__weak
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* person = [[Person alloc] init];
+        person.age = 10;
+        __weak Person* pp = person;
+        // _unsafe_unretained 、weak
+        person.block = ^{
+            NSLog(@"%d",pp.age);
+        };
+    }
+    NSLog(@"123");
+    return 0;
+}
+
+_unsafe_unretained 、weak的区别是weak指向的内存回收后会置为nil，另一个仍然指向，指向一块回收的内存
+~~~
 
 
 
