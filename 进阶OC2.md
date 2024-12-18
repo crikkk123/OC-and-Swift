@@ -10,5 +10,11 @@ oc是一门动态性比较强的编程语言，可以在运行的时候修改编
 从arm64架构开始，对isa进行了优化，变成了一个共用体（union）结构，使用位域来存储更多的信息
 
 ~~~objective-c
+struct objc_object {
+private:
+    char isa_storage[sizeof(isa_t)];
 
+    isa_t &isa() { return *reinterpret_cast<isa_t *>(isa_storage); }
+    const isa_t &isa() const { return *reinterpret_cast<const isa_t *>(isa_storage); }
+public:  在这里就不展示了
 ~~~
