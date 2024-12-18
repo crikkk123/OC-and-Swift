@@ -18,3 +18,5 @@ private:
     const isa_t &isa() const { return *reinterpret_cast<const isa_t *>(isa_storage); }
 public:  在这里就不展示了
 ~~~
+其实就是一个C语言联合体，二进制对应的位表示信息，这个在一些read/write属性的时候就比较常见的，通过左移右移来设置和获取信息
+我这里就不详细介绍联合体了，这个属于C语言基础
