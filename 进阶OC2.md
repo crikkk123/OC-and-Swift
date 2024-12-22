@@ -359,3 +359,10 @@ void cache_t::expand()
 }
 如果内存不够的时候进行扩容2倍的空间，将mask更新，并将哈希表的内容清空，将原来的内存释放
 ~~~
+![image](https://github.com/user-attachments/assets/8eec3a2a-c8ae-4723-b8b7-3049f7a83e02)
+我来简单复述一下这个过程，实例对象首先通过isa指针找到类对象，先在类对象的objc_class的cache中查找，如果没有找到通过 & 上一个mask  找到 class_rw_t结构体，在里面的methods中查找方法，
+如果找到了存储到自己的cache中，如果没有找到，通过上图中的superclass找到父类的类对象，首先在父类的objc_class的cache中查找，如果找到了返回，并存在自己类对象的cache中，如果cache中没有找到
+则在父类的类对象的class_rw_t中的methods查找方法，如果找到了在父类的类对象的cache和自己类对象的cache中存储，如果没有找到则再通过superclass往上查找，直到基类，这个过程中可能涉及扩容在上面有写到
+
+在这里我就懒得验证了，可以通过强转为自己的结构体来观察，如果需要我再验证吧
+
