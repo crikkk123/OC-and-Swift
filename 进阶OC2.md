@@ -366,3 +366,122 @@ void cache_t::expand()
 
 在这里我就懒得验证了，可以通过强转为自己的结构体来观察，如果需要我再验证吧
 
+## objc_msgSend
+OC中的方法调用，其实都是转换为objc_msgSend函数的调用
+
+objc_msgSend的执行流程可以分为3大阶段：消息发送、动态方法解析、消息转发
+~~~objective-c
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        
+        // ((void (*)(id, SEL))(void *)objc_msgSend)((id)p, sel_registerName("test"));
+        // objc_msgSend(p, sel_registerName("test");
+        // 消息接收者（receiver）：p
+        // 消息名称：test
+        [p test];
+        
+        // ((void (*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass("Person"), sel_registerName("initialize"));
+        // objc_msgSend(objc_getClass("Person"), sel_registerName("initialize");
+        // 消息接收者（receiver）：[Person class]
+        // 消息名称：initialize
+        [Person initialize];
+        
+        
+        NSLog(@"%p  %p",sel_registerName("test"),@selector(test));  // 相同
+    }
+    return 0;
+}
+~~~
+
+objc_msgSend的汇编
+~~~objective-c
+由于我不太懂汇编就不解释了
+ENTRY _objc_msgSend
+	UNWIND _objc_msgSend, NoFrame
+	MESSENGER_START
+
+	cmp	x0, #0			// nil check and tagged pointer check
+	b.le	LNilOrTagged		//  (MSB tagged pointer looks negative)
+	ldr	x13, [x0]		// x13 = isa
+	and	x16, x13, #ISA_MASK	// x16 = class	
+LGetIsaDone:
+	CacheLookup NORMAL		// calls imp or objc_msgSend_uncached
+
+LNilOrTagged:
+	b.eq	LReturnZero		// nil check
+
+	// tagged
+	mov	x10, #0xf000000000000000
+	cmp	x0, x10
+	b.hs	LExtTag
+	adrp	x10, _objc_debug_taggedpointer_classes@PAGE
+	add	x10, x10, _objc_debug_taggedpointer_classes@PAGEOFF
+	ubfx	x11, x0, #60, #4
+	ldr	x16, [x10, x11, LSL #3]
+	b	LGetIsaDone
+
+LExtTag:
+	// ext tagged
+	adrp	x10, _objc_debug_taggedpointer_ext_classes@PAGE
+	add	x10, x10, _objc_debug_taggedpointer_ext_classes@PAGEOFF
+	ubfx	x11, x0, #52, #8
+	ldr	x16, [x10, x11, LSL #3]
+	b	LGetIsaDone
+	
+LReturnZero:
+	// x0 is already zero
+	mov	x1, #0
+	movi	d0, #0
+	movi	d1, #0
+	movi	d2, #0
+	movi	d3, #0
+	MESSENGER_END_NIL
+	ret
+
+	END_ENTRY _objc_msgSend
+
+
+	ENTRY _objc_msgLookup
+	UNWIND _objc_msgLookup, NoFrame
+
+    // x0寄存器，里面存放的是receiver，在这里判断消息接收者是否小于等于0
+	cmp	x0, #0			// nil check and tagged pointer check
+    // 如果小于0跳转到 LLookup_NilOrTagged           
+	b.le	LLookup_NilOrTagged	//  (MSB tagged pointer looks negative)
+	ldr	x13, [x0]		// x13 = isa
+	and	x16, x13, #ISA_MASK	// x16 = class	
+LLookup_GetIsaDone:
+    // 查找缓存
+	CacheLookup LOOKUP		// returns imp
+
+LLookup_NilOrTagged:
+	b.eq	LLookup_Nil	// nil check
+
+	// tagged
+	mov	x10, #0xf000000000000000
+	cmp	x0, x10
+	b.hs	LLookup_ExtTag
+	adrp	x10, _objc_debug_taggedpointer_classes@PAGE
+	add	x10, x10, _objc_debug_taggedpointer_classes@PAGEOFF
+	ubfx	x11, x0, #60, #4
+	ldr	x16, [x10, x11, LSL #3]
+	b	LLookup_GetIsaDone
+
+LLookup_ExtTag:	
+	adrp	x10, _objc_debug_taggedpointer_ext_classes@PAGE
+	add	x10, x10, _objc_debug_taggedpointer_ext_classes@PAGEOFF
+	ubfx	x11, x0, #52, #8
+	ldr	x16, [x10, x11, LSL #3]
+	b	LLookup_GetIsaDone
+
+LLookup_Nil:
+	adrp	x17, __objc_msgNil@PAGE
+	add	x17, x17, __objc_msgNil@PAGEOFF
+	ret
+
+	END_ENTRY _objc_msgLookup
+~~~
+整个流程：
+先判断receiver是否为nil，如果为nil直接退出，如果不为nil，receiver通过isa指针找到receiverClass，从receiverClass的cache中查找方法，找到了方法调用方法，结束查找，没找到的话从receiverClass的class_rw_t中查找方法，如果已经排序使用二分查找，没有排序遍历查找，如果找到了方法，调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到receiverClass通过superClass指针找到superClass，如果找到了方法，调用方法，并将方法缓存到receiverClass的cache中，如果没有找到方法从superClass的class_rw_t中查找方法，同样也有排序和未排序的情况，如果找到了调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到判断上层是否还有superClass，如果有继续查找，如果没有进入动态方法解析阶段
+![image](https://github.com/user-attachments/assets/8186d0f0-5af3-48c7-8739-280904f30043)
