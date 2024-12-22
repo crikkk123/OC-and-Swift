@@ -262,3 +262,82 @@ types包含了函数返回值、参数编码的字符串
 ~~~
 
 ### cache
+Class内部结构中有一个方法缓存（cache_t），用散列表（哈希表）来缓存曾经调用过的方法，可以提高方法的查找速度
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        
+        [p test];
+    }
+    return 0;
+}
+
+这样写其实就是给p对象发送test消息，在p对象利用isa指针找到类对象，在methods调用实例方法，也就是class_rw_t中遍历二维数组，如果找不到通过superclass找到父类的类对象，直到找到最后基类
+这样不断地遍历，但是我们要是调用很多次，每次都找到基类很费时间，OC是利用方法缓存来解决这个问题，第一次调用的时候就放到方法缓存中，下次的时候找到缓存中的方法，不用找数组和superclass
+
+struct cache_t {
+    struct bucket_t *_buckets;        // 散列表
+    mask_t _mask;                     // 散列表的长度  -1
+    mask_t _occupied;                 // 已经缓存的方法数量
+};
+
+struct bucket_t {
+private:
+    cache_key_t _key;                // SEL作为key
+    IMP _imp;                        // 函数的内存地址
+};
+~~~
+我们知道cache底层是一个哈希表，他是如下操作的： @selector(test) & _mask当做索引存到哈希表中，有点像C++中的unordered_map的通过散列函数算出的哈希值
+
+~~~objective-c
+bucket_t * cache_t::find(cache_key_t k, id receiver)
+{
+    assert(k != 0);
+
+    bucket_t *b = buckets();
+    mask_t m = mask();
+    mask_t begin = cache_hash(k, m);
+    mask_t i = begin;
+    do {
+        if (b[i].key() == 0  ||  b[i].key() == k) {
+            return &b[i];
+        }
+    } while ((i = cache_next(i, m)) != begin);
+
+    // hack
+    Class cls = (Class)((uintptr_t)this - offsetof(objc_class, cache));
+    cache_t::bad_cache(receiver, (SEL)k, cls);
+}
+在这个cache_hash(k, m);函数中
+static inline mask_t cache_hash(cache_key_t key, mask_t mask) 
+{
+    return (mask_t)(key & mask);
+}
+可以看到实际就是&上mask
+
+do {
+    if (b[i].key() == 0  ||  b[i].key() == k) {
+        return &b[i];
+    }
+} while ((i = cache_next(i, m)) != begin);
+
+#define CACHE_END_MARKER 1
+static inline mask_t cache_next(mask_t i, mask_t mask) {
+    return (i+1) & mask;
+}
+
+#elif __arm64__
+// objc_msgSend has lots of registers available.
+// Cache scan decrements. No end marker needed.
+#define CACHE_END_MARKER 0
+static inline mask_t cache_next(mask_t i, mask_t mask) {
+    return i ? i-1 : mask;
+}
+他在缓存的时候 & 上mask 可能那个索引的位置已经有元素了，他会将索引值减1 （__arm64__）
+在这里可以看到，如果 & 上的结果是我们要找的就直接返回了，如果索引位置的key不是我们要找的，则直接减1寻找
+~~~
