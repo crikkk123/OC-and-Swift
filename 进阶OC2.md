@@ -367,6 +367,7 @@ void cache_t::expand()
 在这里我就懒得验证了，可以通过强转为自己的结构体来观察，如果需要我再验证吧
 
 ## objc_msgSend
+### 消息发送
 OC中的方法调用，其实都是转换为objc_msgSend函数的调用
 
 objc_msgSend的执行流程可以分为3大阶段：消息发送、动态方法解析、消息转发
@@ -485,3 +486,211 @@ LLookup_Nil:
 整个流程：
 先判断receiver是否为nil，如果为nil直接退出，如果不为nil，receiver通过isa指针找到receiverClass，从receiverClass的cache中查找方法，找到了方法调用方法，结束查找，没找到的话从receiverClass的class_rw_t中查找方法，如果已经排序使用二分查找，没有排序遍历查找，如果找到了方法，调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到receiverClass通过superClass指针找到superClass，如果找到了方法，调用方法，并将方法缓存到receiverClass的cache中，如果没有找到方法从superClass的class_rw_t中查找方法，同样也有排序和未排序的情况，如果找到了调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到判断上层是否还有superClass，如果有继续查找，如果没有进入动态方法解析阶段
 ![image](https://github.com/user-attachments/assets/8186d0f0-5af3-48c7-8739-280904f30043)
+
+如果上述没有找到进入第二个阶段，动态方法解析阶段
+### 动态方法解析
+~~~objective-c
+IMP lookUpImpOrForward(Class cls, SEL sel, id inst, 
+                       bool initialize, bool cache, bool resolver)
+{
+    IMP imp = nil;
+    bool triedResolver = NO;
+
+    runtimeLock.assertUnlocked();
+
+    // Optimistic cache lookup
+    if (cache) {
+        imp = cache_getImp(cls, sel);
+        if (imp) return imp;
+    }
+
+    // runtimeLock is held during isRealized and isInitialized checking
+    // to prevent races against concurrent realization.
+
+    // runtimeLock is held during method search to make
+    // method-lookup + cache-fill atomic with respect to method addition.
+    // Otherwise, a category could be added but ignored indefinitely because
+    // the cache was re-filled with the old value after the cache flush on
+    // behalf of the category.
+
+    runtimeLock.read();
+
+    if (!cls->isRealized()) {
+        // Drop the read-lock and acquire the write-lock.
+        // realizeClass() checks isRealized() again to prevent
+        // a race while the lock is down.
+        runtimeLock.unlockRead();
+        runtimeLock.write();
+
+        realizeClass(cls);
+
+        runtimeLock.unlockWrite();
+        runtimeLock.read();
+    }
+
+    if (initialize  &&  !cls->isInitialized()) {
+        runtimeLock.unlockRead();
+        _class_initialize (_class_getNonMetaClass(cls, inst));
+        runtimeLock.read();
+        // If sel == initialize, _class_initialize will send +initialize and 
+        // then the messenger will send +initialize again after this 
+        // procedure finishes. Of course, if this is not being called 
+        // from the messenger then it won't happen. 2778172
+    }
+
+    
+ retry:    
+    runtimeLock.assertReading();
+
+    // Try this class's cache.
+
+    imp = cache_getImp(cls, sel);
+    if (imp) goto done;
+
+    // Try this class's method lists.
+    {
+        Method meth = getMethodNoSuper_nolock(cls, sel);
+        if (meth) {
+            log_and_fill_cache(cls, meth->imp, sel, inst, cls);
+            imp = meth->imp;
+            goto done;
+        }
+    }
+
+    // Try superclass caches and method lists.
+    {
+        unsigned attempts = unreasonableClassCount();
+        for (Class curClass = cls->superclass;
+             curClass != nil;
+             curClass = curClass->superclass)
+        {
+            // Halt if there is a cycle in the superclass chain.
+            if (--attempts == 0) {
+                _objc_fatal("Memory corruption in class list.");
+            }
+            
+            // Superclass cache.
+            imp = cache_getImp(curClass, sel);
+            if (imp) {
+                if (imp != (IMP)_objc_msgForward_impcache) {
+                    // Found the method in a superclass. Cache it in this class.
+                    log_and_fill_cache(cls, imp, sel, inst, curClass);
+                    goto done;
+                }
+                else {
+                    // Found a forward:: entry in a superclass.
+                    // Stop searching, but don't cache yet; call method 
+                    // resolver for this class first.
+                    break;
+                }
+            }
+            
+            // Superclass method list.
+            Method meth = getMethodNoSuper_nolock(curClass, sel);
+            if (meth) {
+                log_and_fill_cache(cls, meth->imp, sel, inst, curClass);
+                imp = meth->imp;
+                goto done;
+            }
+        }
+    }
+
+    // No implementation found. Try method resolver once.
+    // -------------------------------------------------------下面是动态方法解析
+    if (resolver  &&  !triedResolver) {
+        runtimeLock.unlockRead();
+        _class_resolveMethod(cls, sel, inst);
+        runtimeLock.read();
+        // Don't cache the result; we don't hold the lock so it may have 
+        // changed already. Re-do the search from scratch instead.
+        triedResolver = YES;
+        goto retry;
+    }
+
+    // No implementation found, and method resolver didn't help. 
+    // Use forwarding.
+
+    imp = (IMP)_objc_msgForward_impcache;
+    cache_fill(cls, sel, imp, inst);
+
+ done:
+    runtimeLock.unlockRead();
+
+    return imp;
+}
+
+triedResolver标记是否动态解析过
+~~~
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+-(void)test;
+-(void)temp;
+@end
+
+NS_ASSUME_NONNULL_END
+
+-------------------------------
+#import "Person.h"
+#import <objc/runtime.h>
+
+
+@implementation Person
+
+//-(void)test{
+//    NSLog(@"test");
+//}
+
+void abc(id self, SEL _cmd){
+    printf("hello world\n");
+}
+
+
+
+-(void)other{
+    NSLog(@"%s",__func__);
+}
+
++ (BOOL)resolveInstanceMethod:(SEL)sel{
+    
+    if(sel == @selector(temp)){
+        class_addMethod(self, sel, (IMP)abc, "v16@0:8");
+        return YES;
+    }
+    
+    Method mt = class_getInstanceMethod(self, @selector(other));
+    if(sel == @selector(test)){
+        class_addMethod(self, sel, method_getImplementation(mt), method_getTypeEncoding(mt));
+        return YES;
+    }
+    return [super resolveInstanceMethod:sel];
+}
+
+@end
+
+------------------------------------
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import <objc/runtime.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        
+        [p test];
+        [p temp];
+    }
+    return 0;
+}
+~~~
+
+流程：先看是否曾经有动态解析，如果有走消息转发机制，如果没有，调用+resloveInstanceMethod:或者+resloveClassMethod:方法来动态解析方法，并标记为已经动态解析，然后重新走消息发送（从receiverClass的cache中查找方法执行）
+![image](https://github.com/user-attachments/assets/95e956ea-0706-4e57-9652-c5e80f943411)
+
+
+### 消息转发
