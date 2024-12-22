@@ -185,3 +185,80 @@ extra_rc：  里面存储的值是引用计数器减1
 define ISA_MASK        0x007ffffffffffff8ULL  =》 0111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1111 1000  可以看到转换二进制后 后三位全是0，所以class类，meta-class类的十六进制地址应该为0或者8结尾
 
 
+## class的结构
+元类对象的内部结构和类对象的内部结构是相同的，内部放的数据是不同的，元类对象是特殊的类对象
+![image](https://github.com/user-attachments/assets/01900ddf-2569-4265-a9c0-e26273f723e4)
+
+![image](https://github.com/user-attachments/assets/0bc7eaed-d766-4f73-b9b2-460c8d1be6ad)
+
+methods里面存储的是类的和分类的方法列表，如果是类存储的是实例方法，meta-class存储的是类方法
+
+properties里面存储了类的属性以及分类的属性
+
+### class_rw_t
+class_rw_t里面的methods、properties、protocols是二维数组，是可读可写的，包含了类的初始化内容、分类的内容
+
+~~~objective-c
+struct class_rw_ext_t {
+    DECLARE_AUTHED_PTR_TEMPLATE(class_ro_t)
+    class_ro_t_authed_ptr<const class_ro_t> ro;
+    method_array_t methods;
+    property_array_t properties;
+    protocol_array_t protocols;
+    const char *demangledName;
+    uint32_t version;
+};
+~~~
+
+method_array_t实际上是一个二维数组，里面存储的是一维数组，再里面是方法，二维数组指向的一维数组可能包含几个分类的方法最后是类的方法，分类的方法要在类方法的前面     这样可以动态的往里面增加方法和修改方法
+~~~objective-c
+class method_array_t : 
+    public list_array_tt<method_t, method_list_t, method_list_t_authed_ptr>
+{ .....
+~~~
+
+### class_ro_t
+class_ro_t 里面的baseMethodList、baseProtocols、ivars、baseProperties是一维数组，是只读的，包含了类的初始内容，不包含分类
+
+当程序运行起来的时候，将分类的内容和类的内容合并起来的时候放到可读可写的二维数组中
+
+### method_t
+method_t是对方法或函数的封装
+
+~~~objective-c
+struct method_t {
+    SEL name;
+    const char *types;
+    IMP imp;
+
+    struct SortBySELAddress :
+        public std::binary_function<const method_t&,
+                                    const method_t&, bool>
+    {
+        bool operator() (const method_t& lhs,
+                         const method_t& rhs)
+        { return lhs.name < rhs.name; }
+    };
+};
+
+简化后：
+struct method_t {
+    SEL name;        // 函数名  选择器当做方法名
+    const char *types;   // 编码（返回值类型，参数类型）
+    IMP imp;     // 指向函数的指针（函数地址）
+};
+
+IMP代表函数的具体实现
+typedef id _Nullable (*IMP)(id _Nonnull, SEL _Nonnull, ...);
+
+SEL代表方法/函数名，一般叫做选择器，底层结构跟char*类似
+可以通过@selector()和sel_registerName()获得
+可以通过sel_getName()和NSStringFromSelector()转成字符串
+不同类中相同名字的方法，所对应的方法选择器是相同的（通过IMP找到实现）
+typedef struct objc_selector *SEL;
+
+types包含了函数返回值、参数编码的字符串
+返回值 参数1  参数2  .... 参数n
+~~~
+
+### cache
