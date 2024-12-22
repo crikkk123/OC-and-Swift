@@ -340,4 +340,22 @@ static inline mask_t cache_next(mask_t i, mask_t mask) {
 }
 他在缓存的时候 & 上mask 可能那个索引的位置已经有元素了，他会将索引值减1 （__arm64__）
 在这里可以看到，如果 & 上的结果是我们要找的就直接返回了，如果索引位置的key不是我们要找的，则直接减1寻找
+
+
+void cache_t::expand()
+{
+    cacheUpdateLock.assertLocked();
+    
+    uint32_t oldCapacity = capacity();
+    uint32_t newCapacity = oldCapacity ? oldCapacity*2 : INIT_CACHE_SIZE;
+
+    if ((uint32_t)(mask_t)newCapacity != newCapacity) {
+        // mask overflow - can't grow further
+        // fixme this wastes one bit of mask
+        newCapacity = oldCapacity;
+    }
+
+    reallocate(oldCapacity, newCapacity);
+}
+如果内存不够的时候进行扩容2倍的空间，将mask更新，并将哈希表的内容清空，将原来的内存释放
 ~~~
