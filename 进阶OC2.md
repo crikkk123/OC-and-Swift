@@ -694,6 +694,90 @@ int main(int argc, const char * argv[]) {
 
 
 ### 消息转发
+forwardingTargetForSelector：方法，有实例方法也有类方法
 ~~~objective-c
+#import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+-(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+--------------------------------
+#import "Person.h"
+#import <objc/runtime.h>
+#import "Student.h"
+
+@implementation Person
+
+//-(void)test{
+//    NSLog(@"test");
+//}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector{
+    if(aSelector == @selector(test)){
+        return [[Student alloc] init];
+    }
+    return [super forwardingTargetForSelector:aSelector];
+}
+
+@end
+
+-----------------------------------
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student : NSObject
+
+-(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+-----------------------------------------
+#import "Student.h"
+
+@implementation Student
+
+-(void)test{
+    NSLog(@"%s",__func__);
+}
+
+@end
+-------------------------------------------------
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import <objc/runtime.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Person* p = [[Person alloc] init];
+        
+        [p test];
+    }
+    return 0;
+}
+
+输出：-[Student test]
+~~~
+源码：
+~~~objective-c
+........
+    // No implementation found, and method resolver didn't help. 
+    // Use forwarding.
+
+    imp = (IMP)_objc_msgForward_impcache;
+    cache_fill(cls, sel, imp, inst);
+
+ done:
+    runtimeLock.unlockRead();
+
+    return imp;
+}
 ~~~
