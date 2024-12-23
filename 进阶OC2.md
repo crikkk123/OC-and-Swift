@@ -780,4 +780,71 @@ int main(int argc, const char * argv[]) {
 
     return imp;
 }
+
+看一下这个函数_objc_msgForward_impcache：
+
+	STATIC_ENTRY __objc_msgForward_impcache
+
+	MESSENGER_START
+	nop
+	MESSENGER_END_SLOW
+
+	// No stret specialization.
+	b	__objc_msgForward		// 调用 __objc_msgForward
+
+	END_ENTRY __objc_msgForward_impcache
+
+	
+	ENTRY __objc_msgForward   
+
+	adrp	x17, __objc_forward_handler@PAGE
+	ldr	x17, [x17, __objc_forward_handler@PAGEOFF]
+	br	x17
+	
+	END_ENTRY __objc_msgForward
+后面就不太会了........
 ~~~
+
+当forwardingTargetForSelector返回nil时
+~~~objective-c
+#import "Person.h"
+#import <objc/runtime.h>
+#import "Student.h"
+
+@implementation Person
+
+//-(void)test{
+//    NSLog(@"test");
+//}
+
+- (id)forwardingTargetForSelector:(SEL)aSelector{
+    if(aSelector == @selector(test)){
+//        return [[Student alloc] init];
+        return nil;
+    }
+    return [super forwardingTargetForSelector:aSelector];
+}
+
+-(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector{
+    if(aSelector == @selector(test)){
+        return [NSMethodSignature signatureWithObjCTypes:"v16@0:8"];
+    }
+    return [super methodSignatureForSelector:aSelector];
+}
+
+// NSInvocation封装了一个方法调用，包括：方法调用者、方法、方法参数
+// anInvocation.target 方法调用者
+// anInvocation.selector 方法名
+// [anInvocation getArgument: atIndex:] 方法参数
+- (void)forwardInvocation:(NSInvocation *)anInvocation{
+//    anInvocation.target = [[Student alloc] init];
+//    [anInvocation invoke];
+    
+    [anInvocation invokeWithTarget:[[Student alloc] init]];
+}
+
+@end
+
+~~~
+
+整体流程：
