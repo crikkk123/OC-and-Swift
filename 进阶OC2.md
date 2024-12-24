@@ -847,4 +847,8 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-整体流程：
+整体流程：第1阶段： 先判断receiver是否为nil，如果为nil直接退出，如果不为nil，receiver通过isa指针找到receiverClass，从receiverClass的cache中查找方法，找到了方法调用方法，结束查找，没找到的话从receiverClass的class_rw_t中查找方法，如果已经排序使用二分查找，没有排序遍历查找，如果找到了方法，调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到receiverClass通过superClass指针找到superClass，如果找到了方法，调用方法，并将方法缓存到receiverClass的cache中，如果没有找到方法从superClass的class_rw_t中查找方法，同样也有排序和未排序的情况，如果找到了调用方法，结束查找，并将方法缓存到receiverClass的cache中，如果没有找到判断上层是否还有superClass，如果有继续查找，如果没有进入动态方法解析阶段
+
+第2阶段： 有一个bool类型的变量标记是否进入过动态方法解析阶段，如果为true进入第3阶段消息转发，如果为false，调用 +resolveInstanceMethod：  或者+resolveClassMethod： 方法来动态解析方法，标记为已经动态解析，再次进入第1阶段消息发送，如果走完第1个阶段还是没有解决，此时这个bool类型的变量为true，直接进入第3阶段消息发送
+
+第3阶段：消息发送阶段：  调用forwardingTargetForSelector： 方法，返回值不为nil调用：objc_msgSend(返回值，SEL)   如果调用forwardingTargetForSelector返回值为nil，调用  methodSignatureForSelector：  方法，如果返回值不为nil  调用forwardInvocation： 方法，   methodSignatureForSelector返回值为nil，调用  doesNotRecognizeSelector：方法，也就是我们熟悉的方法找不到
