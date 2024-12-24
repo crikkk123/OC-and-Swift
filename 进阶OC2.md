@@ -857,3 +857,9 @@ int main(int argc, const char * argv[]) {
 ![image](https://github.com/user-attachments/assets/093b5f79-9045-40b4-a9d9-e6cd077ed496)
 ![image](https://github.com/user-attachments/assets/8368196b-8bcc-42f8-926c-9e5bc58a9a49)
 
+
+
+### 处理类方法
+~~~objective-c
+
+~~~
