@@ -851,7 +851,7 @@ int main(int argc, const char * argv[]) {
 
 第2阶段： 有一个bool类型的变量标记是否进入过动态方法解析阶段，如果为true进入第3阶段消息转发，如果为false，调用 +resolveInstanceMethod：  或者+resolveClassMethod： 方法来动态解析方法，标记为已经动态解析，再次进入第1阶段消息发送，如果走完第1个阶段还是没有解决，此时这个bool类型的变量为true，直接进入第3阶段消息发送
 
-第3阶段：消息发送阶段：  调用forwardingTargetForSelector： 方法，返回值不为nil调用：objc_msgSend(返回值，SEL)   如果调用forwardingTargetForSelector返回值为nil，调用  methodSignatureForSelector：  方法，如果返回值不为nil  调用forwardInvocation： 方法，   methodSignatureForSelector返回值为nil，调用  doesNotRecognizeSelector：方法，也就是我们熟悉的方法找不到
+第3阶段：消息转发阶段：  调用forwardingTargetForSelector： 方法，返回值不为nil调用：objc_msgSend(返回值，SEL)   如果调用forwardingTargetForSelector返回值为nil，调用  methodSignatureForSelector：  方法，如果返回值不为nil  调用forwardInvocation： 方法，   methodSignatureForSelector返回值为nil，调用  doesNotRecognizeSelector：方法，也就是我们熟悉的方法找不到
 
 ![image](https://github.com/user-attachments/assets/fe765add-4f35-4b7a-b3e4-37b9c4fc754c)
 ![image](https://github.com/user-attachments/assets/093b5f79-9045-40b4-a9d9-e6cd077ed496)
