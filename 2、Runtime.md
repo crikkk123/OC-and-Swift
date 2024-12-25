@@ -914,5 +914,30 @@ NS_ASSUME_NONNULL_END
 }
 
 @end
+~~~
+或者
+~~~objective-c
+#import "Person.h"
+#import "Student.h"
+#import <objc/runtime.h>
 
+@implementation Person
+
+
++(id)forwardingTargetForSelector:(SEL)aSelector{
+    return nil;
+}
+
++(NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector{
+    if(aSelector == @selector(test)){
+        return [NSMethodSignature signatureWithObjCTypes:"v16@0:8"];		
+    }
+    return [super methodSignatureForSelector:aSelector];
+}
+
++(void)forwardInvocation:(NSInvocation *)anInvocation{
+    NSLog(@"ads");
+}
+
+@end
 ~~~
