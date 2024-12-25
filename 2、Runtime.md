@@ -861,5 +861,58 @@ int main(int argc, const char * argv[]) {
 
 ### 处理类方法
 ~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Person.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        [Person test];
+    }
+    return 0;
+}
+------------------------------------------------------
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
++(void)test;
+@end
+
+NS_ASSUME_NONNULL_END
+-------------------------------------------------------------
+#import "Person.h"
+#import "Student.h"
+#import <objc/runtime.h>
+
+@implementation Person
+
+
++(id)forwardingTargetForSelector:(SEL)aSelector{
+    return [Student class];
+}
+@end
+----------------------------------------------------------------------
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student : NSObject
+
++(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+-----------------------------------------------------------------------------
+#import "Student.h"
+
+@implementation Student
+
++(void)test{
+    NSLog(@"%s",__func__);
+}
+
+@end
 
 ~~~
