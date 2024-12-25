@@ -941,3 +941,161 @@ NS_ASSUME_NONNULL_END
 
 @end
 ~~~
+
+
+
+## super
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Student.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Student* stu = [[Student alloc] init];
+    }
+    return 0;
+}
+--------------------------------------------------------
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+@end
+
+NS_ASSUME_NONNULL_END
+-------------------------------------------------------------------
+#import "Person.h"
+
+@implementation Person
+
+@end
+----------------------------------------------------------------------
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student : Person
+
+
+
+@end
+
+NS_ASSUME_NONNULL_END
+----------------------------------------------------------------------------
+#import "Student.h"
+
+@implementation Student
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        NSLog(@"%@",[self class]);   // Student
+        NSLog(@"%@",[self superclass]);   // Person
+        
+        NSLog(@"%@",[super class]);   // Student
+        NSLog(@"%@",[super superclass]);   // Person
+    }
+    return self;
+}
+
+@end
+~~~
+
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Student.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Student* stu = [[Student alloc] init];
+        [stu test];
+    }
+    return 0;
+}
+----------------------------------------------
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+-(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+------------------------------------------------
+#import "Person.h"
+
+@implementation Person
+
+-(void)test{
+    NSLog(@"%s",__func__);
+}
+
+@end
+---------------------------------------------------------
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student : Person
+
+-(void)test;
+
+@end
+
+NS_ASSUME_NONNULL_END
+-------------------------------------------------------------
+#import "Student.h"
+
+@implementation Student
+
+-(void)test{
+    [super test];
+    NSLog(@"Student test");
+}
+
+//- (instancetype)init
+//{
+//    self = [super init];
+//    if (self) {
+//        NSLog(@"%@",[self class]);   // Student
+//        NSLog(@"%@",[self superclass]);   // Person
+//        
+//        NSLog(@"%@",[super class]);   // Student    此处你可能有疑问，后面解释
+//        NSLog(@"%@",[super superclass]);   // Person
+//    }
+//    return self;
+//}
+
+@end
+
+test转换成cpp代码：
+static void _I_Student_test(Student * self, SEL _cmd) {
+    ((void (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass("Student"))}, sel_registerName("test"));
+    NSLog((NSString *)&__NSConstantStringImpl__var_folders_12_mm73jkz91yndqd1l04vb3s6m0000gn_T_Student_1a4439_mi_0);
+}
+
+/// Specifies the superclass of an instance. 
+struct objc_super {
+    /// Specifies an instance of a class.
+    __unsafe_unretained _Nonnull id receiver;		// 消息接收者
+
+    /// Specifies the particular superclass of the instance to message. 
+#if !defined(__cplusplus)  &&  !__OBJC2__
+    /* For compatibility with old objc-runtime.h header */
+    __unsafe_unretained _Nonnull Class class;
+#else
+    __unsafe_unretained _Nonnull Class super_class;	// 从哪开始找
+#endif
+    /* super_class is the first class to search */
+};
+#endif
+~~~
+
+回答刚才的疑问，因为class都可以调用，这个方法在NSObject，class这个方法底层是通过objc_getclass实现的，转到底层实际就是objc_msgSend(消息接受者,方法)，
+[super class]  实际上的消息接收者仍然是self，只不过查找方法的时候直接从父类找
