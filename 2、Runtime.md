@@ -1099,3 +1099,32 @@ struct objc_super {
 
 回答刚才的疑问，因为class都可以调用，这个方法在NSObject，class这个方法底层是通过objc_getclass实现的，转到底层实际就是objc_msgSend(消息接受者,方法)，
 [super class]  实际上的消息接收者仍然是self，只不过查找方法的时候直接从父类找
+
+
+### isKindOfClass 与 isMemberOfClass
+~~~objective-c
+objc源码
+
++ (BOOL)isMemberOfClass:(Class)cls {
+    return object_getClass((id)self) == cls;
+}
+
+- (BOOL)isMemberOfClass:(Class)cls {
+    return [self class] == cls;		// 传入的cls是否为 [self class] 类型  传入的类型和当前的类型
+}
+
++ (BOOL)isKindOfClass:(Class)cls {
+    for (Class tcls = object_getClass((id)self); tcls; tcls = tcls->superclass) {	// 传入的类型和当前的类型或者是其子类
+        if (tcls == cls) return YES;
+    }
+    return NO;
+}
+
+- (BOOL)isKindOfClass:(Class)cls {
+    for (Class tcls = [self class]; tcls; tcls = tcls->superclass) {
+        if (tcls == cls) return YES;
+    }
+    return NO;
+}
+
+~~~
