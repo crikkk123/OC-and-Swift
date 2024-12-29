@@ -1128,3 +1128,27 @@ objc源码
 }
 
 ~~~
+
+如果是类对象
+~~~objective-c
+#import <Foundation/Foundation.h>
+#import "Student.h"
+#import <objc/runtime.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        NSLog(@"%d",[Student isMemberOfClass:object_getClass([Student class])]);	
+        NSLog(@"%d",[Student isKindOfClass:object_getClass([NSObject class])]);
+    }
+    return 0;
+}
+
+isMemberOfClass：
+   实例方法： 传入的类型和当前的类型是否一样（类对象）
+   类方法： 传入的类型和当前的类型是否一样（元类对象）
+
+isKindOfClass：
+   实例方法：传入的类型和当前的类型或者是其子类（类对象）
+   类方法：传入的类型和当前的类型或者是其子类（元类对象）
+~~~
+
