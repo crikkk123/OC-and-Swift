@@ -1150,5 +1150,7 @@ isMemberOfClass：
 isKindOfClass：
    实例方法：传入的类型和当前的类型或者是其子类（类对象）
    类方法：传入的类型和当前的类型或者是其子类（元类对象）
+
+注：NSLog(@"%d",[Student isKindOfClass:[NSObject class]]);  输出1，因为通过superClass往上找的时候，最后会通过NSObject的元类找到类对象，所以输出1
 ~~~
 
