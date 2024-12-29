@@ -1,0 +1,162 @@
+# 1、UIView
+~~~objective-c
+//
+//  ViewController.m
+//  UIView练习
+//
+//  Created by cr on 2024/12/28.
+//
+
+#import "ViewController.h"
+
+@interface TestView : UIView
+
+@end
+
+@implementation TestView
+
+-(instancetype)init{
+    self = [super init];
+    if(self){
+        
+    }
+    return self;
+}
+
+// UIView的生命周期
+- (void)willMoveToSuperview:(nullable UIView *)newSuperview{
+    [super willMoveToSuperview:newSuperview];
+}
+
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+}
+
+- (void)willMoveToWindow:(nullable UIWindow *)newWindow{
+    [super willMoveToWindow:newWindow];
+}
+
+- (void)didMoveToWindow{
+    [super didMoveToWindow];
+}
+
+@end
+
+
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    TestView* view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor redColor];
+    view.frame = CGRectMake(150, 200, 150, 200);
+    [self.view addSubview:view];    // 执行willMoveToSuperview、didMoveToSuperview、willMoveToWindow、didMoveToWindow
+}
+@end
+~~~
+
+## UIVIewController
+自身包含view，可以理解为一个容器
+
+管理View视图的生命周期
+
+响应用户操作
+
+和App整体交互，视图的切换
+
+作为一个container管理多个Controller和动画
+
+~~~objective-c
+//
+//  ViewController.m
+//  UIView练习
+//
+//  Created by cr on 2024/12/28.
+//
+
+#import "ViewController.h"
+
+@interface TestView : UIView
+
+@end
+
+@implementation TestView
+
+-(instancetype)init{
+    self = [super init];
+    if(self){
+        
+    }
+    return self;
+}
+
+// UIView的生命周期
+- (void)willMoveToSuperview:(nullable UIView *)newSuperview{
+    [super willMoveToSuperview:newSuperview];
+}
+
+- (void)didMoveToSuperview{
+    [super didMoveToSuperview];
+}
+
+- (void)willMoveToWindow:(nullable UIWindow *)newWindow{
+    [super willMoveToWindow:newWindow];
+}
+
+- (void)didMoveToWindow{
+    [super didMoveToWindow];
+}
+
+@end
+
+
+
+@interface ViewController ()
+
+@end
+
+@implementation ViewController
+
+- (instancetype)init{
+    self = [super init];
+    if(self){
+        
+    }
+    return self;    // 1、调用init
+}
+
+// UIViewController的生命周期
+- (void)viewWillAppear:(BOOL)animated{    // 3、
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated{     // 4、
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated{    // 5、
+    [super viewWillDisappear:animated];
+}
+
+- (void)viewDidDisappear:(BOOL)animated{    // 6、
+    [super viewDidDisappear:animated];
+}
+
+- (void)viewDidLoad {     // 2、初始化view，调用完后自己的view以及子view都初始化完成
+    [super viewDidLoad];
+    TestView* view = [[UIView alloc] init];
+    view.backgroundColor = [UIColor redColor];
+    view.frame = CGRectMake(150, 200, 150, 200);
+    [self.view addSubview:view];
+}
+@end
+
+UIView负责页面内的内容呈现
+使用基础的UIViewController管理多个UIView
+UIViewController在管理UIVIew的同时，负责不同页面的切换
+~~~
