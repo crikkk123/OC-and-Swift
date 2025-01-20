@@ -884,7 +884,14 @@ key-value observe
 	KVO的本质实际上是把instance的isa指针原本指向类对象的指针指向了一个runtime动态生成的类，
  	名为NSKVONotifying_XXXX 的类，这个类会调用 Foundation 的 _NSSetXXXValueAndNotify函数，
   	新生成的这个类的isa指向原本 instance对象指向的类对象
-
+   
+~~~objective-c
+_NSSetXXXValueAndNotify函数的伪代码
+	[self willChangeValueForKey:@"age"];
+	[super setAge:age];
+	[self didChangeValueForKey:@"age"];  在这个里面进行通知监听器，属性发生了改变
+		[observer observerValueForKeyPath:key ofObject:self change:nil context:nil];
+~~~
 
 
 # KVC
