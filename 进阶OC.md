@@ -893,6 +893,8 @@ _NSSetXXXValueAndNotify函数的伪代码
 		[observer observerValueForKeyPath:key ofObject:self change:nil context:nil];
 ~~~
 
+----   dealloc、set、class、_isKVOA
+
 ~~~objective-c
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -920,6 +922,7 @@ _NSSetXXXValueAndNotify函数的伪代码
 }
 ~~~
 图片：
+
 <img width="498" alt="image" src="https://github.com/user-attachments/assets/4b18939c-550d-43fa-b6db-077af0f66141" />
 
 # KVC
