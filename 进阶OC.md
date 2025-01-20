@@ -879,6 +879,35 @@ key-value observe
 
 <img width="313" alt="image" src="https://github.com/user-attachments/assets/ae1af168-9f0f-444c-8d00-bd8f8dede7d0">
 
+~~~objective-c
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.p1 = [[TempPerson alloc] init];
+    self.p1.age = 10;
+    self.p2 = [[TempPerson alloc] init];
+    self.p2.age = 100;
+    
+    NSLog(@"-%@  %@",object_getClass(self.p1),object_getClass(self.p2));
+    
+    NSKeyValueObservingOptions oper = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
+    [self.p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
+    
+    NSLog(@"-%@  %@",object_getClass(self.p1),object_getClass(self.p2));
+    
+    self.p1.age = 20;
+    self.p2.age = 200;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    NSLog(@"%@ 的 %@ %@ -> %@",object,keyPath,change[@"old"],change[@"new"]);
+    NSLog(@"11");
+    
+}
+~~~
+图片：
+<img width="498" alt="image" src="https://github.com/user-attachments/assets/4b18939c-550d-43fa-b6db-077af0f66141" />
+
 
 ## 1、本质
 	KVO的本质实际上是把instance的isa指针原本指向类对象的指针指向了一个runtime动态生成的类，
