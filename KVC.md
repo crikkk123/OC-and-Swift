@@ -63,8 +63,30 @@ NS_ASSUME_NONNULL_BEGIN
 <img width="887" alt="image" src="https://github.com/user-attachments/assets/efea2fe1-238a-40bb-85d3-35914396623a" />
 可以看到KVC是会触发KVO的，在KVC的setvalue中调用willchange，didchange了，下面验证一下：
 ~~~objective-c
+#import "TempPerson.h"
 
+@implementation TempPerson
+
+- (void)willChangeValueForKey:(NSString *)key {
+    [super willChangeValueForKey:key];
+    NSLog(@"---willChangeValueForKey----%@",key);
+}
+
+- (void)didChangeValueForKey:(NSString *)key {
+    NSLog(@"---didChangeValueForKey------begin---%@",key);
+    [super didChangeValueForKey:key];
+    NSLog(@"---didChangeValueForKey------end---%@",key);
+}
+
++(BOOL)accessInstanceVariablesDirectly{
+    return YES;  // 默认值为YES
+}
+@end
 ~~~
+<img width="471" alt="image" src="https://github.com/user-attachments/assets/05171503-65f5-414e-91f5-41e30eb4f6f0" />
+
+
+
 
 
 
