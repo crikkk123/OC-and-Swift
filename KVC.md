@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 <img width="887" alt="image" src="https://github.com/user-attachments/assets/efea2fe1-238a-40bb-85d3-35914396623a" />
 可以看到KVC是会触发KVO的，在KVC的setvalue中调用willchange，didchange了，下面验证一下：
+
 ~~~objective-c
 #import "TempPerson.h"
 
