@@ -126,6 +126,137 @@ category的底层是将原来的方法向后移动，并且将分类的方法放
 
 load方法会调用自己的父类，然后调用自己的分类，如果不是继承关系则跟编译顺序有关，并且如果先调用父类的load方法，再调用自己的时候就不调用父类的load方法了，因为load方法只调用一次
 
+~~~objective-c
+main.m
+#import <Foundation/Foundation.h>
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // person  student
+    }
+    return 0;
+}
+
+--------------------------------------------
+person.h
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person : NSObject
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+person.m
+#import "Person.h"
+
+@implementation Person
+
++(void)load{
+    NSLog(@"Person load ");
+}
+
+@end
+
+--------------------------------------------
+person(Eat).h
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person (Eat)
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+person(Eat).m
+#import "Person+Eat.h"
+
+@implementation Person (Eat)
+
++(void)load{
+    NSLog(@"Person(Eat) load ");
+}
+
+@end
+
+
+--------------------------------------------
+person(test).h
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person (Test)
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+person(test).m
+#import "Person+Test.h"
+
+@implementation Person (Test)
+
++(void)load{
+    NSLog(@"Person(Test) load ");
+}
+
+@end
+
+
+--------------------------------------------
+student.h
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student : Person
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+
+
+student.m
+#import "Student.h"
+
+@implementation Student
+
++ (void)load{
+    NSLog(@"Student load ");
+}
+
+@end
+
+--------------------------------------------
+student(play).h
+#import "Student.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Student (play)
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+student(play).m
+#import "Student+play.h"
+
+@implementation Student (play)
+
++ (void)load{
+    NSLog(@"Student(play) load ");
+}
+
+@end
+~~~
+
 
 ## +initialize
 
