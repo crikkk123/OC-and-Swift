@@ -272,6 +272,8 @@ student(play).m
 
 结果：
 
+<img width="486" alt="image" src="https://github.com/user-attachments/assets/399ef288-0e16-4fb3-a231-e143d52e522d" />
+
 
 
 
