@@ -828,4 +828,4 @@ objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
 
 
 -------------------------------------------------------------------------------------------------------------
-1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
+不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
