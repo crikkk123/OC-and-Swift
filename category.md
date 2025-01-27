@@ -132,7 +132,7 @@ main.m
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // person  student
+        
     }
     return 0;
 }
@@ -297,3 +297,8 @@ load：先调用类的load然后是先编译的类先调用，调用子类的loa
 
 
 initialize：先初始化父类，再初始化子类
+
+
+~~~objective-c
+
+~~~
