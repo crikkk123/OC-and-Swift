@@ -128,3 +128,5 @@ load方法会调用自己的父类，然后调用自己的分类，如果不是�
 
 
 ## +initialize
+
++initialize方法会在类第一次接收到消息时调用，有继承关系的时候先调用父类的initialize方法
