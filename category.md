@@ -131,8 +131,16 @@ load方法会调用自己的父类，然后调用自己的分类，如果不是�
 
 +initialize方法会在类第一次接收到消息时调用，有继承关系的时候先调用父类的initialize方法
 
-+initialize和+load的很大区别是，+initialize是通过objc_msgSend进行调用的
 
 如果子类没有实现+initialize，会调用父类的+initialize（所以父类的+initialize可能会被调用多次）
 
 如果分类实现了initialize，就覆盖类本身的+initialize调用
+
++initialize和+load的很大区别是，+initialize是通过objc_msgSend进行调用的，+load方法是通过函数地址调用的
+
+load：先调用类的load然后是先编译的类先调用，调用子类的load之前会调用父类的load
+
+      然后是分类的load，先编译的分类先调用
+
+
+initialize：先初始化父类，再初始化子类
