@@ -299,6 +299,90 @@ load：先调用类的load然后是先编译的类先调用，调用子类的loa
 initialize：先初始化父类，再初始化子类
 
 
-~~~objective-c
 
+把上面的load方法统一换成initialize
+~~~objective-c
+main.m
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import "Student.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        [Person alloc];
+    }
+    return 0;
+}
 ~~~
+结果：
+
+<img width="364" alt="image" src="https://github.com/user-attachments/assets/5fea3ae4-3fce-4e13-8b42-163d740cd3b6" />
+
+这个结果跟编译顺序有关，编译顺序截图：
+
+<img width="299" alt="image" src="https://github.com/user-attachments/assets/d9c02f40-36df-4a1b-8433-8194d9c37928" />
+
+因为category是把自己的实现向后偏移，前面是分类的实现，又因为是从后遍历分类插入到method的前面，所以后编译的分类，先调用，如果这个分类没有实现这个方法，会找其他分类，如果也没有再找自己的实现，如果都没有回通过isa向上找，这个位置就不详细介绍了，在其他文章有介绍
+
+
+
+~~~objective-c
+main.m
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import "Student.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        [Student alloc];
+    }
+    return 0;
+}
+~~~
+
+结果：
+
+<img width="369" alt="image" src="https://github.com/user-attachments/assets/3fc1b77d-6584-46bf-84c0-e68ac4b0f478" />
+
+因为调用自己的分类的时候，会调用父类的分类，上面介绍了，然后调用自己最好编译的分类
+
+
+将上面所有分类的initialize方法都注释掉，只留Person类的initialize，并新增一个类继承Person
+~~~objective-c
+teacher.h
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Teacher : Person
+
+@end
+
+teacher.m
+#import "Teacher.h"
+
+@implementation Teacher
+
+@end
+
+main.m
+#import <Foundation/Foundation.h>
+#import "Person.h"
+#import "Student.h"
+#import "Teacher.h"
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        [Student alloc];
+        [Teacher alloc];
+    }
+    return 0;
+}
+~~~
+
+结果：
+
+<img width="346" alt="image" src="https://github.com/user-attachments/assets/b65042bb-c0ff-4b5c-82a9-98dc06304819" />
+
+
+原因：因为initialize是通过msgSend消息机制调用的，所以都没有实现initialize会最终到调用到父类的也就是Person类的方法，三次的原因是第一次调用[Student alloc] 的方法的时候，会先判断自己没有初始化，父类也没有初始化，调用父类的initialize方法，然后调用自己的方法，但是自己没有实现，又调用Person的方法，然后调用[Teacher alloc] 判断自己没有被初始化过，但是他的父类初始化了，所以这步比上步少了调用父类的initialize方法，接下来调用自己的initialize方法，但是自己没有实现，又调用到Person父类的initialize方法，最终是三次
