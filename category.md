@@ -258,16 +258,21 @@ student(play).m
 ~~~
 
 编译顺序：
+
 <img width="736" alt="image" src="https://github.com/user-attachments/assets/4ec6b2a5-682b-49ec-9d4c-1b9074c2a90d" />
 
 结果：
+
 <img width="455" alt="image" src="https://github.com/user-attachments/assets/92eb09b9-6ec7-43a8-8a6b-fbf96e4c0cce" />
 
 
 更换编译顺序：
+
 <img width="269" alt="image" src="https://github.com/user-attachments/assets/9a7adb6b-36ed-4388-a6be-8c83e1fafe0a" />
 
 结果：
+
+
 
 
 
