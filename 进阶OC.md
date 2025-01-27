@@ -829,106 +829,6 @@ _method_setImplementation(Class cls, method_t *m, IMP imp)
 ~~~
 
 
-# KVO
-key-value observe
-
-~~~objective-c
-
-#import "ViewController.h"
-
-@interface ViewController ()
-@property(strong) TempPerson* p1;
-@property(strong) TempPerson* p2;
-@end
-
-@implementation TempPerson
-
-
-
-@end
-
-@implementation ViewController
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.p1 = [[TempPerson alloc] init];
-    self.p1.age = 10;
-    self.p2 = [[TempPerson alloc] init];
-    self.p2.age = 100;
-    
-    NSKeyValueObservingOptions oper = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
-    [self.p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
-    
-    self.p1.age = 20;
-    self.p2.age = 200;
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    NSLog(@"%@ 的 %@ %@ -> %@",object,keyPath,change[@"old"],change[@"new"]);
-    NSLog(@"11");
-}
-
-@end
-
-~~~
-图片：
-
-<img width="673" alt="image" src="https://github.com/user-attachments/assets/79aa3b5c-4bc7-44b7-94dd-23d34522ed0f">
-
-根据下面的图片可以看出，p1的isa指针和p2的isa指针指向的class类不同（！！！后面会补具体的p1->isa类型：自己写其struct类型进行强转）
-
-<img width="313" alt="image" src="https://github.com/user-attachments/assets/ae1af168-9f0f-444c-8d00-bd8f8dede7d0">
-
-
-## 1、本质
-	KVO的本质实际上是把instance的isa指针原本指向类对象的指针指向了一个runtime动态生成的类，
- 	名为NSKVONotifying_XXXX 的类，这个类会调用 Foundation 的 _NSSetXXXValueAndNotify函数，
-  	新生成的这个类的isa指向原本 instance对象指向的类对象
-   
-~~~objective-c
-_NSSetXXXValueAndNotify函数的伪代码
-	[self willChangeValueForKey:@"age"];
-	[super setAge:age];
-	[self didChangeValueForKey:@"age"];  在这个里面进行通知监听器，属性发生了改变
-		[observer observerValueForKeyPath:key ofObject:self change:nil context:nil];
-~~~
-
-----   dealloc、set、class、_isKVOA
-
-~~~objective-c
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    self.p1 = [[TempPerson alloc] init];
-    self.p1.age = 10;
-    self.p2 = [[TempPerson alloc] init];
-    self.p2.age = 100;
-    
-    NSLog(@"-%@  %@",object_getClass(self.p1),object_getClass(self.p2));
-    
-    NSKeyValueObservingOptions oper = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
-    [self.p1 addObserver:self forKeyPath:@"age" options:oper context:nil];
-    
-    NSLog(@"-%@  %@",object_getClass(self.p1),object_getClass(self.p2));
-    
-    self.p1.age = 20;
-    self.p2.age = 200;
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    NSLog(@"%@ 的 %@ %@ -> %@",object,keyPath,change[@"old"],change[@"new"]);
-    NSLog(@"11");
-    
-}
-~~~
-图片：
-
-<img width="498" alt="image" src="https://github.com/user-attachments/assets/4b18939c-550d-43fa-b6db-077af0f66141" />
-
-# KVC
-key-value Coding 键值编码，可以通过一个key来访问某个属性
-
-
 # Category
 ## 1、category的底层实现原理
 ~~~objective-c
@@ -1021,28 +921,6 @@ int main(int argc, const char * argv[]) {
 }
 
 ~~~
-
-
-
-
-## +load方法
-调用时机：+load方法会在Runtime加载类对象(class)和分类(category)的时候调用
-
-调用频率： 每个类对象、分类的+load方法，在工程的整个生命周期中只调用一次
-
-调用顺序：
-
-1、先调用类对象(class)的+load方法：
-
-	类对象的load调用顺序是按照  类文件的编译顺序  进行先后调用；
- 
-	调用子类+load之前会先调用父类的+load方法
-
-2、再调用分类(category)的+load方法：按照编译先后顺序调用（先编译的，先被调用）
-
-+load方法是在程序一启动运行，加载镜像中的类对象(class)和分类(category)的时候就会调用，只会调用一次，不论在项目中有没有用到该类对象或者该分类，他们统统都会先被加载进内存，因为类的加载只有一次，所以所有的load方法肯定都会被调用而且只有一次
-
-
 
 ## +initialize方法
 
