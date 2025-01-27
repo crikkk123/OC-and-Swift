@@ -922,8 +922,6 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-## +initialize方法
-
 ## 关联对象
 ~~~objective-c
 @interface Person ： NSObject
