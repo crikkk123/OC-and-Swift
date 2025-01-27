@@ -386,3 +386,10 @@ int main(int argc, const char * argv[]) {
 
 
 原因：因为initialize是通过msgSend消息机制调用的，所以都没有实现initialize会最终到调用到父类的也就是Person类的方法，三次的原因是第一次调用[Student alloc] 的方法的时候，会先判断自己没有初始化，父类也没有初始化，调用父类的initialize方法，然后调用自己的方法，但是自己没有实现，又调用Person的方法，然后调用[Teacher alloc] 判断自己没有被初始化过，但是他的父类初始化了，所以这步比上步少了调用父类的initialize方法，接下来调用自己的initialize方法，但是自己没有实现，又调用到Person父类的initialize方法，最终是三次
+
+
+
+## 关联对象
+~~~objective-c
+
+~~~
