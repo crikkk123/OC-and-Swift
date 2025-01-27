@@ -391,5 +391,441 @@ int main(int argc, const char * argv[]) {
 
 ## 关联对象
 ~~~objective-c
+#import "Person.h"
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Person (Test)
+
+@property(nonatomic,assign) int age;
+
+- (void)setAge:(int)age;
+- (int)age;
+
+@end
+
+NS_ASSUME_NONNULL_END
+~~~
+
+如果在分类里面@property(nonatomic,assign) int age;声明一个变量，分类只会声明get和set方法，具体的实现是不会做的，而正常的类是会帮我们实现的
+
+不能直接给category添加成员变量，可以间接添加
+
+
+---------------------------------------------------
+~~~objective-c
+@interface Person ： NSObject
+@property(nonatomic,assign) int age;
+@end
+
+等同于
+
+@interface Person ： NSObject
+{
+    int _age;
+}
+-(void) setAge:(int) age;
+-(int) age;
+@end
+
+@implementation Person
+
+-(void) setAge:(int) age{
+    _age = age;
+}
+
+-(int) age{
+    return _age;
+}
+
+@end
+
+添加一个分类
+
+@interface Person(Test)
+@property(nonatomic,assign) int weight;
+@end
+
+它会变为下面，私有变量不会生成，并且只有函数声明，既然他不提供手动添加成员变量和实现get、set方法，这样是报错的
+
+@interface Person(Test)
+-(void)setWeight:(int)weight;
+-(int) weight;
+@end
 
 ~~~
+![image](https://github.com/user-attachments/assets/b20fb767-bb85-4f52-806e-6d0c39dc6411)
+
+在Category底层中也是没有存储成员变量的：
+![image](https://github.com/user-attachments/assets/c42da3fd-6378-42ff-988e-5410470766d1)
+
+~~~objective-c
+解决方法1：利用全局变量存储，但是这样的话多创建几个对象，使用的是一个全局变量
+
+存在的问题：1、内存泄漏  2、线程安全   3、代码冗余
+
+@implementation Person (Test)
+
+int weight_;
+
+-(void)setWeight:(int) weight{
+    weight_ = weight;
+}
+
+-(int) weight{
+    return weight_;
+}
+
+@end
+
+解决方法2：利用字典
+
+@implementation Person (Test)
+
+NSMutableDictionary *weights_;
+
++(void)load{
+    weights_ = [NSMutableDictionary dictionary];
+}
+
+-(void)setWeight:(int) weight{
+    NSString* key = [NSString stringWithFormat:@"%p",self];
+    weights_[key] = @(weight);
+}
+
+-(int) weight{
+    NSString* key = [NSString stringWithFormat:@"%p",self];
+    return [weights_[key] intValue];
+}
+
+@end
+~~~
+![image](https://github.com/user-attachments/assets/de6c1528-48a9-411d-8752-bee4cb918988)
+
+~~~objective-c
+
+objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
+                         id _Nullable value, objc_AssociationPolicy policy)
+
+枚举值：
+typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
+    OBJC_ASSOCIATION_ASSIGN = 0,           /**< Specifies an unsafe unretained reference to the associated object. */
+    OBJC_ASSOCIATION_RETAIN_NONATOMIC = 1, /**< Specifies a strong reference to the associated object. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_COPY_NONATOMIC = 3,   /**< Specifies that the associated object is copied. 
+                                            *   The association is not made atomically. */
+    OBJC_ASSOCIATION_RETAIN = 01401,       /**< Specifies a strong reference to the associated object.
+                                            *   The association is made atomically. */
+    OBJC_ASSOCIATION_COPY = 01403          /**< Specifies that the associated object is copied.
+                                            *   The association is made atomically. */
+};
+
+
+NameKey没赋值相当于空值，这样的话只有一个属性是可以的，但是再添加一个属性就有问题了
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+const void *NameKey;     
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+@end
+
+---------------------------------------------------------------
+
+存储自己的地址：
+
+@interface Person (Test)
+
+@property(nonatomic,assign) NSString* name;
+@property(nonatomic,assign) int weight;
+
+@end
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+static const void *NameKey = &NameKey;
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+static const void *WeightKey = &WeightKey;
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,WeightKey,@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, WeightKey) intValue];
+}
+
+@end
+
+---------------------------------------------------------------------------------------------------
+static const char方案：
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+static const char NameKey;
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,&NameKey,name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, NameKey);
+}
+
+static const char WeightKey;
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,&WeightKey,@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, &WeightKey) intValue];
+}
+
+@end
+
+
+-----------------------------------------------------------------------------------------------------------------
+利用字符串常量
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,@"name",name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, @"name");
+}
+
+
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,@"weight",@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, @"weight") intValue];
+}
+
+@end
+
+
+---------------------------------------------------------------------------------
+使用selector方法
+
+#import "Person+Test.h"
+#import <objc/runtime.h>
+
+@implementation Person (Test)
+
+
+- (void) setName:(NSString *)name{
+    objc_setAssociatedObject(self,@selector(name),name,OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (NSString*) name{
+    return objc_getAssociatedObject(self, @selector(name));
+}
+
+
+- (void) setWeight:(int)weight{
+    objc_setAssociatedObject(self,@selector(weight),@(weight),OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (int)weight{
+    return [objc_getAssociatedObject(self, @selector(weight)) intValue];
+}
+
+@end
+
+~~~
+
+关联对象的底层原理：
+AssociationManager
+AssociationHashMap
+ObjectAssociationMap
+ObjcAssociation
+
+~~~objective-c
+源码：
+
+void
+objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)
+{
+    _object_set_associative_reference(object, key, value, policy);
+}
+
+
+void
+_object_set_associative_reference(id object, const void *key, id value, uintptr_t policy)
+{
+    // This code used to work when nil was passed for object and key. Some code
+    // probably relies on that to not crash. Check and handle it explicitly.
+    // rdar://problem/44094390
+    if (!object && !value) return;
+
+    if (object->getIsa()->forbidsAssociatedObjects())
+        _objc_fatal("objc_setAssociatedObject called on instance (%p) of class %s which does not allow associated objects", object, object_getClassName(object));
+
+    DisguisedPtr<objc_object> disguised{(objc_object *)object};
+    ObjcAssociation association{policy, value};
+
+    // retain the new value (if any) outside the lock.
+    association.acquireValue();
+
+    bool isFirstAssociation = false;
+    {
+        AssociationsManager manager;	// 在下面这个类型的具体
+        AssociationsHashMap &associations(manager.get());
+
+        if (value) {
+            auto refs_result = associations.try_emplace(disguised, ObjectAssociationMap{});
+            if (refs_result.second) {
+                /* it's the first association we make */
+                isFirstAssociation = true;
+            }
+
+            /* establish or replace the association */
+            auto &refs = refs_result.first->second;
+            auto result = refs.try_emplace(key, std::move(association));
+            if (!result.second) {
+                association.swap(result.first->second);
+            }
+        } else {
+            auto refs_it = associations.find(disguised);
+            if (refs_it != associations.end()) {
+                auto &refs = refs_it->second;
+                auto it = refs.find(key);
+                if (it != refs.end()) {
+                    association.swap(it->second);
+                    refs.erase(it);
+                    if (refs.size() == 0) {
+                        associations.erase(refs_it);
+
+                    }
+                }
+            }
+        }
+    }
+
+    // Call setHasAssociatedObjects outside the lock, since this
+    // will call the object's _noteAssociatedObjects method if it
+    // has one, and this may trigger +initialize which might do
+    // arbitrary stuff, including setting more associated objects.
+    if (isFirstAssociation)
+        object->setHasAssociatedObjects();
+
+    // release the old value (outside of the lock).
+    association.releaseHeldValue();
+}
+
+class AssociationsManager {
+    using Storage = ExplicitInitDenseMap<DisguisedPtr<objc_object>, ObjectAssociationMap>; 	// value的类型在下面
+    static Storage _mapStorage;
+
+public:
+    AssociationsManager()   { AssociationsManagerLock.lock(); }
+    ~AssociationsManager()  { AssociationsManagerLock.unlock(); }
+
+    AssociationsHashMap &get() {
+        return _mapStorage.get();
+    }
+
+    static void init() {
+        _mapStorage.init();
+    }
+};
+
+typedef DenseMap<const void *, ObjcAssociation> ObjectAssociationMap;	 	// value的类型在下面
+
+
+api那个存储在这
+class ObjcAssociation {
+    uintptr_t _policy;	// 1
+    id _value;		// 2
+public:
+    ObjcAssociation(uintptr_t policy, id value) : _policy(policy), _value(value) {}
+    ObjcAssociation() : _policy(0), _value(nil) {}
+    ObjcAssociation(const ObjcAssociation &other) = default;
+    ObjcAssociation &operator=(const ObjcAssociation &other) = default;
+    ObjcAssociation(ObjcAssociation &&other) : ObjcAssociation() {
+        swap(other);
+    }
+
+    inline void swap(ObjcAssociation &other) {
+        std::swap(_policy, other._policy);
+        std::swap(_value, other._value);
+    }
+
+    inline uintptr_t policy() const { return _policy; }
+    inline id value() const { return _value; }
+
+    inline void acquireValue() {
+        if (_value) {
+            switch (_policy & 0xFF) {
+            case OBJC_ASSOCIATION_SETTER_RETAIN:
+                _value = objc_retain(_value);
+                break;
+            case OBJC_ASSOCIATION_SETTER_COPY:
+                _value = ((id(*)(id, SEL))objc_msgSend)(_value, @selector(copy));
+                break;
+            }
+        }
+    }
+
+    inline void releaseHeldValue() {
+        if (_value && (_policy & OBJC_ASSOCIATION_SETTER_RETAIN)) {
+            objc_release(_value);
+        }
+    }
+
+    inline void retainReturnedValue() {
+        if (_value && (_policy & OBJC_ASSOCIATION_GETTER_RETAIN)) {
+            objc_retain(_value);
+        }
+    }
+
+    inline id autoreleaseReturnedValue() {
+        if (slowpath(_value && (_policy & OBJC_ASSOCIATION_GETTER_AUTORELEASE))) {
+            return objc_autorelease(_value);
+        }
+        return _value;
+    }
+};
+
+~~~
+
+OBJC_EXPORT void
+objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,
+                         id _Nullable value, objc_AssociationPolicy policy)
+
+![image](https://github.com/user-attachments/assets/e767fbc5-9ffd-4108-92e4-9cecedd7c172)
+
+
+-------------------------------------------------------------------------------------------------------------
+1、不能直接给Category添加成员变量，但是可以间接实现Category有成员变量的效果
