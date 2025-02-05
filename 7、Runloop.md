@@ -2,7 +2,8 @@
 
 运行循环，在程序运行过程中循环做一些事情
 
-比如：定时器、PerformSelector
+比如：
+     定时器、PerformSelector
      
      CGD Async Main Queue
      
