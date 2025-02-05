@@ -92,11 +92,16 @@ UITrackingRunLoopMode：界面跟踪 Mode，用于 ScrollView 追踪触摸滑动
 @end
 
 ~~~
-![](assets/17383112868628.jpg)
+
+
+
+
+![image](https://github.com/user-attachments/assets/8e4a50c5-fe93-436f-b502-e6d795ad7f3c)
+
 可以看到两个的地址是不同的，因为上面的是对下面的一层封装，也就是OC封装了一下C语言的对象
 
 
-
+~~~text
 RunLoop的运行逻辑
 Source0:触摸事件处理， performSelector:onThread:
 
@@ -122,6 +127,8 @@ Observers:用于监听RunLoop的状态，UI刷新（BeforeWaiting）、Autorelea
     01> 回到第02步
     02> 退出Loop
 11、通知Observers：退出Loop
+~~~
+
 
 
 ~~~objective-c
