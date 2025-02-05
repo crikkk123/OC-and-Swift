@@ -52,7 +52,7 @@ CFRunLoopGetMain();           // 获取主线程的runloop对象
 runloop包含很多个mode，mode里的source0、source1、observers、timers分别是CFRunLoopSourceRef、CFRunLoopSourceRef、CFRunLoopObserverRef、CFRunLoopTimersRef类型的数组
 
 
-
+~~~text
 CFRunLoopModeRef：
 CFRunLoopModeRef代表Runloop的运行模式
 一个RunLoop包含若干个Mode，每个Mode又包含若干个Source0/Source1/Timer/Observer
@@ -62,15 +62,16 @@ RunLoop启动时只能选择其中一个Mode，作为currentMode
 
 
 比如在滚动的时候切换到滚动模式的Mode，非滚动模式下的默认模式，这样做的好处是滚动的时候只处理滚动的事件即可，默认情况下处理默认的情况
+~~~
 
 
-
+~~~text
 CFRunLoopModeRef：
 常见的2种Mode
 kCFRunLoopDefaultMode（NSDefaultRunLoopMode）：App的默认Mode，通常主线程是在这个Mode下运行
 
 UITrackingRunLoopMode：界面跟踪 Mode，用于 ScrollView 追踪触摸滑动，保证界面滑动时不受其他 Mode 影响
-
+~~~
 
 
 ~~~objective-c
