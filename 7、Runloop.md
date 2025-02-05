@@ -33,6 +33,8 @@ runloop会在线程结束时销毁
 ~~~
 
 
+
+~~~text
 获取runloop对象
 Foudation：
 [NSRunLoop currentRunloop];   // 获取当前线程的runloop对象
@@ -41,7 +43,7 @@ Foudation：
 core Foundation
 CFRunLoopGetCurrent();        // 获取当前线程的runloop对象
 CFRunLoopGetMain();           // 获取主线程的runloop对象
-
+~~~
 
 
 ![](assets/17383102145213.jpg)
