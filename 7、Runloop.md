@@ -46,7 +46,8 @@ CFRunLoopGetMain();           // 获取主线程的runloop对象
 ~~~
 
 
-![](assets/17383102145213.jpg)
+![image](https://github.com/user-attachments/assets/f5c6c54a-c1a2-45ef-bd6d-0689ad084d56)
+
 
 runloop包含很多个mode，mode里的source0、source1、observers、timers分别是CFRunLoopSourceRef、CFRunLoopSourceRef、CFRunLoopObserverRef、CFRunLoopTimersRef类型的数组
 
