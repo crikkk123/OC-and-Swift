@@ -16,7 +16,9 @@
      
 如果没有runloop，程序在运行完主函数后就会结束
 
-![](assets/17383089643432.jpg)
+![image](https://github.com/user-attachments/assets/7590c870-4ae9-4c7b-92bd-c1951045fe7e)
+
+
 切换mode是在do-while里面做的，所以切换mode不会导致程序的退出
 
 
