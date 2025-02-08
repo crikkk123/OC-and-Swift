@@ -266,6 +266,8 @@ struct __main_block_impl_0 {
   }
 };
 可以看到没有捕获到结构体中
+wkeqjkrg -  200 2354
+end
 ~~~
 
 ~~~objective-c
