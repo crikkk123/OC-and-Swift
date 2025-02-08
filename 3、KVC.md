@@ -98,7 +98,7 @@ didchange
 
 <img width="1080" alt="image" src="https://github.com/user-attachments/assets/9e83a9c7-021c-43bd-81b0-2254a1affa39" />
 
-
+<img width="1095" alt="image" src="https://github.com/user-attachments/assets/1ed495a2-e12c-4951-82a4-1729799759ab" />
 
 在这拿文字叙述一遍
 调用setValue：forKey：   先按照setKey、_setKey：顺序查找方法，如果找到了方法直接调用，如果没找到方法，查看accessInstanceVariablesDirectly方法的返回值（表示是否可以直接方法变量），如果返回NO，抛出异常，如果返回YES， 按照 _key、_isKey、key、isKey顺序查找成员变量，找到了直接赋值，找不到成员变量抛出异常
