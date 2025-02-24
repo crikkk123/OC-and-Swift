@@ -30,7 +30,7 @@ runloop与线程：
 每条线程都有唯一的一个与之对应的Runloop对象
 Runloop保存在一个全局的Dictionary里，线程作为key，runloop作为value
 线程刚创建时并没有runloop对象，runloop会在第一次获取它时创建
-runloop会在线程结束时销毁
+runloop会在线程结束时销毁（通过注册的回调销毁）
 主线程的runloop已经自动获取（创建），子线程默认没有开启Runloop
 ~~~
 
