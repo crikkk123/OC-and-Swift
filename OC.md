@@ -1,6 +1,7 @@
 # iOS
 
-![image-20250622133432829](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20250622133432829.png)
+<img width="1245" height="622" alt="image-20250622133432829" src="https://github.com/user-attachments/assets/0bea2569-9445-483b-aef6-33ea156fd09a" />
+
 
 ## GCD
 
