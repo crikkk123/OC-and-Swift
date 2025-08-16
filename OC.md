@@ -69,7 +69,8 @@ dispatch_async(queue,^{});
 
 
 
-![image-20250622140031791](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20250622140031791.png)
+<img width="1245" height="622" alt="image-20250622133432829" src="https://github.com/user-attachments/assets/8388bf3a-2cae-4980-bebf-f2fca1b7e0ff" />
+
 
 、
 
@@ -673,7 +674,7 @@ dispatch_semaphore_signal(semaphore);
 
 ### 性能排序
 
-![image-20250810195337367](C:\Users\23057\AppData\Roaming\Typora\typora-user-images\image-20250810195337367.png)
+<img width="595" height="486" alt="image-20250810195337367" src="https://github.com/user-attachments/assets/58ed6ade-9366-4502-9254-b358f70948c7" />
 
 
 
