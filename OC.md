@@ -708,3 +708,6 @@ Mac平台，最低有效位是1
 
 <img width="932" height="221" alt="image" src="https://github.com/user-attachments/assets/5e6ea0ae-b127-45f6-b40f-946ac3ac7523" />
 
+第一段由于一个指针装不下，使用不了tagged Pointer，调用name的set方法，在给name赋值之前调用release释放，多线程导致name被释放多次报错bad address
+
+第二段可以使用tagged Pointer，相当于直接给指针赋值
