@@ -711,3 +711,6 @@ Mac平台，最低有效位是1
 第一段由于一个指针装不下，使用不了tagged Pointer，调用name的set方法，在给name赋值之前调用release释放，多线程导致name被释放多次报错bad address
 
 第二段可以使用tagged Pointer，相当于直接给指针赋值
+
+打印其类型一个为：__NSCFString、NSTaggedPointerString
+
