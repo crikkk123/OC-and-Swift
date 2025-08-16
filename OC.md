@@ -682,3 +682,29 @@ dispatch_semaphore_signal(semaphore);
 
 ### pthread_rwlock
 
+
+## Tagged Pointer
+
+从64bit开始，iOS引入了Tagged Pointer技术，用于优化NSNumber、NSDate、NSString等小对象的存储
+
+在没有使用Tagged Pointer之前， NSNumber等对象需要动态分配内存、维护引用计数等，NSNumber指针存储的是堆中NSNumber对象的地址值
+
+使用Tagged Pointer之后，NSNumber指针里面存储的数据变成了：Tag + Data，也就是将数据直接存储在了指针中
+
+当指针不够存储数据时，才会使用动态分配内存的方式来存储数据
+
+objc_msgSend能识别Tagged Pointer，比如NSNumber的intValue方法，直接从指针提取数据，节省了以前的调用开销
+
+如何判断一个指针是否为Tagged Pointer？
+
+iOS平台，最高有效位是1（第64bit）
+
+Mac平台，最低有效位是1
+
+
+
+思考以下2段代码能发生什么事？有什么区别？
+<img width="932" height="206" alt="image" src="https://github.com/user-attachments/assets/50d1b621-a22a-42bb-b955-059519d2375d" />
+
+<img width="932" height="221" alt="image" src="https://github.com/user-attachments/assets/5e6ea0ae-b127-45f6-b40f-946ac3ac7523" />
+
