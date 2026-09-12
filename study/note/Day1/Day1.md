@@ -11,8 +11,8 @@ DeepSeek：sk-d03d7d072e4341cdb5e3a1bebc3fec6b
 ```
 我们平时编写的Objective-C代码，底层实现其实都是C\C++代码
 ```
+<img width="1942" height="242" alt="image" src="https://github.com/user-attachments/assets/8209cd50-79af-4e36-b910-ea057e916ebc" />
 
-[![image](https://private-user-images.githubusercontent.com/149687686/650664904-702bb722-9b55-4152-8173-59500ff9a7b0.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODkxOTEyODQsIm5iZiI6MTc4OTE5MDk4NCwicGF0aCI6Ii8xNDk2ODc2ODYvNjUwNjY0OTA0LTcwMmJiNzIyLTliNTUtNDE1Mi04MTczLTU5NTAwZmY5YTdiMC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTEyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkxMlQwNTI5NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zZGIwMTI3ZjJmMjYxMzhmNjFhMjQ1Y2Q1OTNhNjkwYjNlNWJiYjRiYTJiYWYwNWUyM2ZlMjdmMmNkMzZlMjZlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.srTobbWEtBiIayEbTBInBgg3VwjNU_mLycwE-ph-5bw)](https://private-user-images.githubusercontent.com/149687686/650664904-702bb722-9b55-4152-8173-59500ff9a7b0.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODkxOTEyODQsIm5iZiI6MTc4OTE5MDk4NCwicGF0aCI6Ii8xNDk2ODc2ODYvNjUwNjY0OTA0LTcwMmJiNzIyLTliNTUtNDE1Mi04MTczLTU5NTAwZmY5YTdiMC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTEyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkxMlQwNTI5NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zZGIwMTI3ZjJmMjYxMzhmNjFhMjQ1Y2Q1OTNhNjkwYjNlNWJiYjRiYTJiYWYwNWUyM2ZlMjdmMmNkMzZlMjZlJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.srTobbWEtBiIayEbTBInBgg3VwjNU_mLycwE-ph-5bw)
 
 所以Objective-C的面向对象都是基于C\C++的数据结构实现的
 
@@ -34,7 +34,9 @@ xcrun  -sdk  iphoneos  clang  -arch  arm64  -rewrite-objc  OC源文件  -o  输�
 
 思考：一个OC对象在内存中是如何布局的？
 
-NSObject的底层实现:[![image](https://private-user-images.githubusercontent.com/149687686/650664932-50242071-c5dc-424c-917c-75cb818476b6.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODkxOTEyODQsIm5iZiI6MTc4OTE5MDk4NCwicGF0aCI6Ii8xNDk2ODc2ODYvNjUwNjY0OTMyLTUwMjQyMDcxLWM1ZGMtNDI0Yy05MTdjLTc1Y2I4MTg0NzZiNi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTEyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkxMlQwNTI5NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yNDdkZTc3M2NhNmEwMjc1NjMyNTdkNTIwOTc0YjQ3ZTAwMjNmZTc4YjQ3YzMxNDU2ZThkZDQwNzM2ZjhhZWE0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.hM5ME30jXAEDU7nM4BoE7OuGCLiQnMVg1d-ENHACjGI)](https://private-user-images.githubusercontent.com/149687686/650664932-50242071-c5dc-424c-917c-75cb818476b6.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODkxOTEyODQsIm5iZiI6MTc4OTE5MDk4NCwicGF0aCI6Ii8xNDk2ODc2ODYvNjUwNjY0OTMyLTUwMjQyMDcxLWM1ZGMtNDI0Yy05MTdjLTc1Y2I4MTg0NzZiNi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTEyJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkxMlQwNTI5NDRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0yNDdkZTc3M2NhNmEwMjc1NjMyNTdkNTIwOTc0YjQ3ZTAwMjNmZTc4YjQ3YzMxNDU2ZThkZDQwNzM2ZjhhZWE0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.hM5ME30jXAEDU7nM4BoE7OuGCLiQnMVg1d-ENHACjGI)
+NSObject的底层实现:
+<img width="1896" height="716" alt="image" src="https://github.com/user-attachments/assets/8b56b362-8fdb-4c3d-84d8-40e4fb5d0708" />
+
 
 ```
 一个NSObject对象占用多少内存？
@@ -213,11 +215,10 @@ int main(int argc, const char * argv[]) {
 
 ~~~
 
-![image-20260912143116993](/Users/yuan/Library/Application Support/typora-user-images/image-20260912143116993.png)
+<img width="2032" height="924" alt="image" src="https://github.com/user-attachments/assets/8df0c606-d659-491f-8bd4-db584c054cff" />
+<img width="1936" height="714" alt="image" src="https://github.com/user-attachments/assets/dbc3ba3a-9347-4513-a43d-bdcc659ea237" />
+<img width="1894" height="1052" alt="image" src="https://github.com/user-attachments/assets/7de0b507-4e45-4d07-a10b-91716ce20833" />
 
-![image-20260912143705627](/Users/yuan/Library/Application Support/typora-user-images/image-20260912143705627.png)
-
-![image-20260912143855520](/Users/yuan/Library/Application Support/typora-user-images/image-20260912143855520.png)
 
 16 ,16
 
