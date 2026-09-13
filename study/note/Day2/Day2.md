@@ -324,8 +324,10 @@ superclass指针
 
 类的类方法信息（class method）
 
-![image-20260913133032812](/Users/yuan/Library/Application Support/typora-user-images/image-20260913133032812.png)
-![image-20260913133150951](/Users/yuan/Library/Application Support/typora-user-images/image-20260913133150951.png)
+<img width="946" height="1072" alt="image" src="https://github.com/user-attachments/assets/614aa892-1087-47d7-ad6e-8e6391a1feff" />
+
+<img width="832" height="1358" alt="image" src="https://github.com/user-attachments/assets/0500606e-a544-4503-aaae-fca8985ae499" />
+
 
 ```objc_getClass```
 Class objc_getClass(const char *aClassName)
