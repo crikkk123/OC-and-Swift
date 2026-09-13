@@ -328,8 +328,9 @@ superclass指针
 
 <img width="832" height="1358" alt="image" src="https://github.com/user-attachments/assets/0500606e-a544-4503-aaae-fca8985ae499" />
 
-
 ```objc_getClass```
+
+~~~objc
 Class objc_getClass(const char *aClassName)
 {
     if (!aClassName) return Nil;
@@ -337,7 +338,6 @@ Class objc_getClass(const char *aClassName)
     // NO unconnected, YES class handler
     return look_up_class(aClassName, NO, YES);
 }
-
 
 look_up_class
 Class
@@ -405,7 +405,6 @@ look_up_class(const char *name,
     return result;
 }
 
-
 getClassExceptSomeSwift
 static Class getClassExceptSomeSwift(const char *name)
 {
@@ -424,7 +423,6 @@ static Class getClassExceptSomeSwift(const char *name)
 
     return nil;
 }
-
 
 getClass_impl
 static Class getClass_impl(const char *name)
@@ -458,23 +456,24 @@ static Class getClassFromNamedClassTable(const char *name) {
     return (Class)ptrauth_auth_data(result, namedClassTablePtrauthKey, namedClassTableDiscriminator(hash));
 }
 
-
 NXMapGetWithHash
 void *NXMapGetWithHash(NXMapTable *table, const void *key, unsigned hash) {
     void	*value;
     return (_NXMapMemberWithHash(table, key, hash, &value) != NX_MAPNOTAKEY) ? value : NULL;
 }
 
-
 注：传入一个字符串的类名，返回类对象
+~~~
 
 ```object_getClass```
 
+~~~objc
 Class object_getClass(id obj)
 {
-		// obj如果是 instance 对象，返回 class 对象
+  	// obj如果是 instance 对象，返回 class 对象
 		// obj 如果是 class 对象，返回 meta-class 对象
 		// objc 如果是 meta-class 对象，返回 NSObject（基类）的 meta-class 对象
     if (obj) return obj->getIsa();
     else return Nil;
 }
+~~~
