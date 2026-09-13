@@ -237,3 +237,242 @@ class_getInstanceSize([NSObject class]);
 #import <malloc/malloc.h>
 malloc_size((__bridge const void *)obj);
 ~~~
+
+
+## OC对象的分类
+
+Objective-C中的对象，简称OC对象，主要可以分为3种
+
+instance对象（实例对象）
+
+class对象（类对象）
+
+meta-class对象（元类对象） 
+
+### instance
+
+instance对象就是通过类alloc出来的对象，每次调用alloc都会产生新的instance对象
+<img width="942" height="130" alt="image" src="https://github.com/user-attachments/assets/ec5309af-8878-4df2-b665-ee78e593ca48" />
+object1、object2是NSObject的instance对象（实例对象）
+
+它们是不同的两个对象，分别占据着两块不同的内存
+
+instance对象在内存中存储的信息包括
+
+isa指针
+
+其他成员变量
+
+
+
+### class
+
+class对象在内存中存储的信息主要包括
+
+isa指针
+
+superclass指针
+
+类的属性信息（@property）
+
+类的对象方法信息（instance method）
+
+类的协议信息（protocol）
+
+类的成员变量信息（ivar）（名字、类型）
+
+~~~objc
+- (void) test;
+~~~
+
+这种方法放到类对象里面
+
+<img width="486" height="816" alt="image" src="https://github.com/user-attachments/assets/bb202045-ca1c-40fb-a648-6ed22f128c7b" />
+
+### meta-class
+
+~~~objc
+// 将类对象当做参数传入，获得元类对象
+Class objectMetaClass = object_getClass([NSObject class]); // runtime API
+// 是否是元类对象
+class_isMetaClass(objectMetaClass);
+
+object_getClass 里面要传入类对象才能获得元类对象
+否则传入的是实例对象，返回的是类对象
+  
+Class objectMetaClass = [[NSObject class] class];
+这里不管调用多少次 class 都是类对象，元类只能通过object_getClass传入类对象获得
+~~~
+
+这种类方法放到元类对象里面
+
+~~~Objc
++ (void) test;
+~~~
+
+
+
+objectMetaClass是NSObject的meta-class对象（元类对象）
+
+每个类在内存中有且只有一个meta-class对象
+
+meta-class对象和class对象的内存结构是一样的，但是用途不一样，在内存中存储的信息主要包括
+
+isa指针
+
+superclass指针
+
+类的类方法信息（class method）
+
+![image-20260913133032812](/Users/yuan/Library/Application Support/typora-user-images/image-20260913133032812.png)
+![image-20260913133150951](/Users/yuan/Library/Application Support/typora-user-images/image-20260913133150951.png)
+
+```objc_getClass```
+Class objc_getClass(const char *aClassName)
+{
+    if (!aClassName) return Nil;
+
+    // NO unconnected, YES class handler
+    return look_up_class(aClassName, NO, YES);
+}
+
+
+look_up_class
+Class
+look_up_class(const char *name,
+              bool includeUnconnected __attribute__((unused)),
+              bool includeClassHandler __attribute__((unused)))
+{
+    if (!name) return nil;
+
+    Class result;
+    bool unrealized;
+    {
+        runtimeLock.lock();
+        result = getClassExceptSomeSwift(name);
+        unrealized = result  &&  !result->isRealized();
+        if (unrealized) {
+            result = realizeClassMaybeSwiftAndUnlock(result, runtimeLock);
+            // runtimeLock is now unlocked
+        } else {
+            runtimeLock.unlock();
+        }
+    }
+
+    if (!result) {
+        // Ask Swift about its un-instantiated classes.
+
+        // We use thread-local storage to prevent infinite recursion
+        // if the hook function provokes another lookup of the same name
+        // (for example, if the hook calls objc_allocateClassPair)
+
+        auto *tls = _objc_fetch_pthread_data(true);
+
+        // Stop if this thread is already looking up this name.
+        for (unsigned i = 0; i < tls->classNameLookupsUsed; i++) {
+            if (0 == strcmp(name, tls->classNameLookups[i])) {
+                return nil;
+            }
+        }
+
+        // Save this lookup in tls.
+        if (tls->classNameLookupsUsed == tls->classNameLookupsAllocated) {
+            tls->classNameLookupsAllocated =
+                (tls->classNameLookupsAllocated * 2 ?: 1);
+            size_t size = tls->classNameLookupsAllocated *
+                sizeof(tls->classNameLookups[0]);
+            tls->classNameLookups = (const char **)
+                realloc(tls->classNameLookups, size);
+        }
+        tls->classNameLookups[tls->classNameLookupsUsed++] = name;
+
+        // Call the hook.
+        Class swiftcls = nil;
+        if (GetClassHook.get()(name, &swiftcls)) {
+            ASSERT(swiftcls->isRealized());
+            result = swiftcls;
+        }
+
+        // Erase the name from tls.
+        unsigned slot = --tls->classNameLookupsUsed;
+        ASSERT(slot >= 0  &&  slot < tls->classNameLookupsAllocated);
+        ASSERT(name == tls->classNameLookups[slot]);
+        tls->classNameLookups[slot] = nil;
+    }
+
+    return result;
+}
+
+
+getClassExceptSomeSwift
+static Class getClassExceptSomeSwift(const char *name)
+{
+    lockdebug::assert_locked(&runtimeLock.get());
+
+    // Try name as-is
+    Class result = getClass_impl(name);
+    if (result) return result;
+
+    // Try Swift-mangled equivalent of the given name.
+    if (char *swName = copySwiftV1MangledName(name)) {
+        result = getClass_impl(swName);
+        free(swName);
+        return result;
+    }
+
+    return nil;
+}
+
+
+getClass_impl
+static Class getClass_impl(const char *name)
+{
+    lockdebug::assert_locked(&runtimeLock.get());
+
+    // allocated in _read_images
+    ASSERT(gdb_objc_realized_classes);
+
+    // Try runtime-allocated table
+    if (Class cls = getClassFromNamedClassTable(name))
+        return cls;
+
+    // Try table from dyld shared cache.
+    // Note we do this last to handle the case where we dlopen'ed a shared cache
+    // dylib with duplicates of classes already present in the main executable.
+    // In that case, we put the class from the main executable in
+    // gdb_objc_realized_classes and want to check that before considering any
+    // newly loaded shared cache binaries.
+    return getPreoptimizedClass(name);
+}
+
+
+getClassFromNamedClassTable
+static Class getClassFromNamedClassTable(const char *name) {
+    unsigned hash = namedClassTableHash(name);
+    void *result = (Class)NXMapGetWithHash(gdb_objc_realized_classes, name, hash);
+    if (!result)
+        return nullptr;
+
+    return (Class)ptrauth_auth_data(result, namedClassTablePtrauthKey, namedClassTableDiscriminator(hash));
+}
+
+
+NXMapGetWithHash
+void *NXMapGetWithHash(NXMapTable *table, const void *key, unsigned hash) {
+    void	*value;
+    return (_NXMapMemberWithHash(table, key, hash, &value) != NX_MAPNOTAKEY) ? value : NULL;
+}
+
+
+注：传入一个字符串的类名，返回类对象
+
+```object_getClass```
+
+Class object_getClass(id obj)
+{
+		// obj如果是 instance 对象，返回 class 对象
+		// obj 如果是 class 对象，返回 meta-class 对象
+		// objc 如果是 meta-class 对象，返回 NSObject（基类）的 meta-class 对象
+    if (obj) return obj->getIsa();
+    else return Nil;
+}
